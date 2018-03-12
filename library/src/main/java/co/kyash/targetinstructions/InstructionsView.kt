@@ -1,4 +1,4 @@
-package co.kyash.spotinstructions
+package co.kyash.targetinstructions
 
 import android.animation.Animator
 import android.animation.TimeInterpolator
@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import co.kyash.spotinstructions.R
+import co.kyash.spotinstructions.Spot
 
 class InstructionsView @JvmOverloads constructor(
         context: Context,

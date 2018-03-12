@@ -1,4 +1,4 @@
-package co.kyash.androidspotinstructions.example
+package co.kyash.androidtargetinstructions.example
 
 import android.app.Application
 

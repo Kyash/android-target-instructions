@@ -1,10 +1,10 @@
-package co.kyash.androidspotinstructions.example
+package co.kyash.androidtargetinstructions.example
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewTreeObserver
-import co.kyash.androidspotinstructions.example.databinding.ActivityMainBinding
+import co.kyash.androidtargetinstructions.example.databinding.ActivityMainBinding
 import co.kyash.spotinstructions.SimpleSpot
 import co.kyash.spotinstructions.SpotInstructions
 

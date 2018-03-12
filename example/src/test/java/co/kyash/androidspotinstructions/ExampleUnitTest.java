@@ -1,4 +1,4 @@
-package co.kyash.androidspotinstructions;
+package co.kyash.targetinstructions;
 
 import org.junit.Test;
 

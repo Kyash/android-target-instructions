@@ -8,16 +8,17 @@ import android.support.annotation.ColorInt
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import co.kyash.targetinstructions.InstructionsView
 import java.lang.ref.WeakReference
 
 class SpotInstructions private constructor(activity: Activity) {
 
     companion object {
-        private val INSTRUCTIONS_DURATION = 500L
+        private val INSTRUCTIONS_DURATION = 300L
 
         @ColorInt
         private val DEFAULT_OVERLAY_COLOR = R.color.default_cover
-        private val DEFAULT_DURATION = 1000L
+        private val DEFAULT_DURATION = 500L
         private val DEFAULT_ANIMATION: TimeInterpolator = DecelerateInterpolator()
 
         fun with(activity: Activity) = SpotInstructions(activity)

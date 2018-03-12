@@ -1,8 +1,10 @@
-package co.kyash.spotinstructions
+package co.kyash.targetinstructions
 
 import android.app.Activity
 import android.support.annotation.DimenRes
 import android.view.View
+import co.kyash.spotinstructions.R
+import co.kyash.spotinstructions.Spot
 import java.lang.ref.WeakReference
 
 abstract class AbstractSpotBuilder<T : AbstractSpotBuilder<T, S>, S : Spot>(

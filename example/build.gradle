@@ -12,7 +12,7 @@ android {
     dataBinding.enabled = true
 
     defaultConfig {
-        applicationId "co.kyash.androidspotinstructions"
+        applicationId "co.kyash.targetinstructions"
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch

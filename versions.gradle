@@ -1,0 +1,51 @@
+ext {
+    versions = [
+            compileSdk     : 26,
+            buildTools     : "26.0.1",
+            minSdk         : 19,
+            targetSdk      : 26,
+            gradleBuildTool: "3.0.1",
+            mavenGradle    : "2.0",
+            kotlin         : "1.2.10",
+            ktlint         : "0.14.0",
+            ktlintGradle   : "3.0.0",
+            supportLibrary : "26.1.0",
+            espresso       : "3.0.1",
+    ]
+
+    depends = [
+            kotlin       : [
+                    stdlib: "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin",
+            ],
+
+            //==================== Support Library ====================
+            support      : [
+                    appcompat       : "com.android.support:appcompat-v7:$versions.supportLibrary",
+                    design          : "com.android.support:design:$versions.supportLibrary",
+                    cardview        : "com.android.support:cardview-v7:$versions.supportLibrary",
+                    constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2"
+            ],
+
+            crashlytics  : "com.crashlytics.sdk.android:crashlytics:2.8.0@aar",
+
+            //==================== Structure ====================
+            binding      : [
+                    compiler: "com.android.databinding:compiler:3.0.1",
+            ],
+
+            //==================== Test ====================
+            junit        : "junit:junit:4.12",
+            mockitoKotlin: "com.nhaarman:mockito-kotlin:1.5.0",
+            robolectric  : [
+                    core: "org.robolectric:robolectric:3.5.1",
+            ],
+            supporttest  : [
+                    runner  : "com.android.support.test:runner:1.0.1",
+                    espresso: "com.android.support.test.espresso:espresso-core:3.0.1"
+            ],
+            espresso     : [
+                    core   : "com.android.support.test.espresso:espresso-core:$versions.espresso",
+                    intents: "com.android.support.test.espresso:espresso-intents:$versions.espresso"
+            ],
+    ]
+}

@@ -10,18 +10,35 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 class SimpleSpot(
-        private val point: PointF,
+        private val left: Float,
+        private val top: Float,
+        private val width: Float,
+        private val height: Float,
         private val radius: Float,
+        private val padding: Float,
         private val view: View
 ) : Spot {
 
-    override fun getPoint(): PointF = point
+    companion object {
+        private val ABOVE_SPOTLIGHT = 0
+        private val BELOW_SPOTLIGHT = 1
+    }
+
+    override fun getLeft(): Float = left
+
+    override fun getTop(): Float = top
+
+    override fun getWidth(): Float = width
+
+    override fun getHeight(): Float = height
 
     override fun getRadius(): Float = radius
 
+    override fun getPadding(): Float = padding
+
     override fun getView(): View = view
 
-    class Builder(context: Activity) : AbstractBuilder<Builder, SimpleSpot>(context) {
+    class Builder(context: Activity) : AbstractSpotBuilder<Builder, SimpleSpot>(context) {
 
         private var title: CharSequence? = null
         private var description: CharSequence? = null
@@ -42,15 +59,24 @@ class SimpleSpot(
 
         override fun build(): SimpleSpot {
             val activity = activityWeakReference.get()
-            if (activity != null) {
-                val view = activity.getLayoutInflater().inflate(R.layout.layout_simple, null)
+            if (activity == null) {
+                throw IllegalStateException("activity is null")
+            } else {
+                val view = activity.layoutInflater.inflate(R.layout.layout_simple, null)
                 (view.findViewById(R.id.title) as TextView).text = title
                 (view.findViewById(R.id.description) as TextView).text = description
-                val point = PointF(startX, startY)
+                val point = PointF(left + width / 2, top - height / 2)
                 calculatePosition(point, radius, view)
-                return SimpleSpot(point, radius, view)
-            } else {
-                throw IllegalStateException("Activity is null")
+
+                return SimpleSpot(
+                        left = left,
+                        top = top,
+                        width = width,
+                        height = height,
+                        radius = radius,
+                        padding = padding,
+                        view = view
+                )
             }
         }
 
@@ -76,12 +102,6 @@ class SimpleSpot(
                 }
                 BELOW_SPOTLIGHT -> layout.y = (point.y + radius + 100f).toInt().toFloat()
             }
-        }
-
-        companion object {
-
-            private val ABOVE_SPOTLIGHT = 0
-            private val BELOW_SPOTLIGHT = 1
         }
     }
 }

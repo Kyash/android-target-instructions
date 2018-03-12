@@ -4,7 +4,11 @@ import android.animation.Animator
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
@@ -18,8 +22,8 @@ class InstructionsView @JvmOverloads constructor(
 
     private val paint = Paint()
     private val spotPaint = Paint()
-    private val point: PointF = PointF()
-    private var animator: ValueAnimator? = null
+    private var currentSpot: Spot? = null
+    private var widthAnimator: ValueAnimator? = null
 
     var overlayColor: Int = ContextCompat.getColor(context, R.color.default_cover)
 
@@ -32,7 +36,7 @@ class InstructionsView @JvmOverloads constructor(
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
         spotPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         setOnClickListener({
-            if (animator != null && !animator!!.isRunning && animator!!.animatedValue as Float > 0) {
+            if (widthAnimator != null && !widthAnimator!!.isRunning && widthAnimator!!.animatedValue as Float > 0) {
                 listener?.onClicked()
             }
         })
@@ -42,23 +46,35 @@ class InstructionsView @JvmOverloads constructor(
         super.onDraw(canvas)
         paint.color = overlayColor
         canvas?.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), paint)
-        if (animator != null) {
-            canvas?.drawCircle(point.x, point.y, animator!!.animatedValue as Float, spotPaint)
+        if (widthAnimator != null && currentSpot != null) {
+            val factor = (widthAnimator!!.animatedValue as Float) / 1000f
+
+            val left = currentSpot!!.getLeft() - currentSpot!!.getPadding()
+            val top = currentSpot!!.getTop() - currentSpot!!.getPadding()
+            val right = currentSpot!!.getLeft() + currentSpot!!.getWidth() + currentSpot!!.getPadding()
+            val bottom = currentSpot!!.getTop() + currentSpot!!.getHeight() + currentSpot!!.getPadding()
+            val radius = currentSpot!!.getRadius()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                canvas?.drawRoundRect(left, top, right, bottom, radius, radius, spotPaint)
+            } else {
+                canvas?.drawRect(left, top, right, bottom, spotPaint)
+            }
         }
     }
 
-    fun turnUp(x: Float, y: Float, radius: Float, duration: Long, interpolator: TimeInterpolator) {
-        this.point.set(x, y)
-        animator = ValueAnimator.ofFloat(0f, radius).apply {
+    fun turnUp(spot: Spot, duration: Long, interpolator: TimeInterpolator) {
+        currentSpot = spot
+        widthAnimator = ValueAnimator.ofFloat(0f, 1000f).apply {
             addUpdateListener { invalidate() }
             this.interpolator = interpolator
             this.duration = duration
         }
-        animator?.start()
+        widthAnimator?.start()
     }
 
     fun turnDown(radius: Float, duration: Long, interpolator: TimeInterpolator) {
-        animator = ValueAnimator.ofFloat(radius, 0f).apply {
+        widthAnimator = ValueAnimator.ofFloat(radius, 0f).apply {
             addUpdateListener { invalidate() }
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) {
@@ -80,7 +96,7 @@ class InstructionsView @JvmOverloads constructor(
             this.interpolator = interpolator
             this.duration = duration
         }
-        animator?.start()
+        widthAnimator?.start()
     }
 
     interface OnStateChangedListener {

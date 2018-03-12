@@ -78,7 +78,7 @@ class SpotInstructions private constructor(activity: Activity) {
             instructionsViewWeakReference.get().let {
                 it?.removeAllViews()
                 it?.addView(spot.getView())
-                it?.turnUp(spot.getPoint().x, spot.getPoint().y, spot.getRadius(), duration, animation)
+                it?.turnUp(spot, duration, animation)
             }
         }
     }

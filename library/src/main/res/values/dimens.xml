@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="default_spot_padding">8dp</dimen>
+    <dimen name="default_spot_radius">8dp</dimen>
+
+</resources>

@@ -22,13 +22,11 @@ class MainActivity : AppCompatActivity() {
                 binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
                 val spot1 = SimpleSpot.Builder(this@MainActivity).setPoint(binding.fab)
-                        .setRadius(100f)
                         .setTitle("First title")
                         .setDescription("First description")
                         .build()
 
                 val spot2 = SimpleSpot.Builder(this@MainActivity).setPoint(binding.title)
-                        .setRadius(100f)
                         .setTitle("Second title")
                         .setDescription("Second description")
                         .build()

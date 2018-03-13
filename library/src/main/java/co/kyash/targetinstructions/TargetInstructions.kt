@@ -8,6 +8,7 @@ import android.support.annotation.ColorInt
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import co.kyash.targetinstructions.targets.Target
 import java.lang.ref.WeakReference
 
 class TargetInstructions private constructor(

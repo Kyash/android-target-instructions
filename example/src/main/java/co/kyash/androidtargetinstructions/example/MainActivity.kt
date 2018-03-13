@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.ViewTreeObserver
 import android.view.animation.BounceInterpolator
 import co.kyash.androidtargetinstructions.example.databinding.ActivityMainBinding
-import co.kyash.targetinstructions.SimpleTarget
+import co.kyash.targetinstructions.targets.SimpleAnimationTarget
 import co.kyash.targetinstructions.TargetInstructions
 
 
@@ -22,12 +22,12 @@ class MainActivity : AppCompatActivity() {
             override fun onGlobalLayout() {
                 binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val target1 = SimpleTarget.Builder(this@MainActivity).setPoint(binding.fab)
+                val target1 = SimpleAnimationTarget.Builder(this@MainActivity).setPoint(binding.fab)
                         .setTitle("First title")
                         .setDescription("First description")
                         .build()
 
-                val target2 = SimpleTarget.Builder(this@MainActivity).setPoint(binding.title)
+                val target2 = SimpleAnimationTarget.Builder(this@MainActivity).setPoint(binding.title)
                         .setTitle("Second title")
                         .setDescription("Second description")
                         .build()

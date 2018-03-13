@@ -3,6 +3,7 @@ package co.kyash.targetinstructions
 import android.app.Activity
 import android.support.annotation.DimenRes
 import android.view.View
+import co.kyash.targetinstructions.targets.Target
 import java.lang.ref.WeakReference
 
 abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target>(

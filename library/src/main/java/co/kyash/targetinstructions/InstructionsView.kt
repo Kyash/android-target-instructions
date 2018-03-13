@@ -1,15 +1,14 @@
 package co.kyash.targetinstructions
 
-import android.animation.Animator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import co.kyash.targetinstructions.targets.Target
 
 class InstructionsView @JvmOverloads constructor(
         context: Context,
@@ -17,12 +16,7 @@ class InstructionsView @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    companion object {
-        private val DEFAULT_ANIMATION_PER = 1000f
-    }
-
     private val paint = Paint()
-    private val targetPaint = Paint()
     private var currentTarget: Target? = null
 
     var overlayColor: Int = ContextCompat.getColor(context, R.color.default_cover)
@@ -34,9 +28,8 @@ class InstructionsView @JvmOverloads constructor(
         bringToFront()
         setWillNotDraw(false)
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        targetPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         setOnClickListener({
-            if (currentTarget != null && !currentTarget!!.isAnimating()) {
+            if (currentTarget != null && currentTarget!!.canClick()) {
                 listener?.onClicked()
             }
         })
@@ -48,7 +41,7 @@ class InstructionsView @JvmOverloads constructor(
         canvas?.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), paint)
 
         if (currentTarget != null && canvas != null) {
-            currentTarget!!.drawHighlight(canvas, targetPaint)
+            currentTarget!!.drawHighlight(canvas)
         }
     }
 
@@ -57,41 +50,20 @@ class InstructionsView @JvmOverloads constructor(
         addView(target.messageView)
 
         currentTarget = target
-        currentTarget?.highlightShowAnimator?.let {
-            it.addUpdateListener { invalidate() }
-            it.start()
-        }
-        currentTarget?.show()
+        currentTarget?.show(ValueAnimator.AnimatorUpdateListener { invalidate() })
     }
 
     fun hideTarget(target: Target) {
-        target.highlightHideAnimator.let {
-            it.addUpdateListener { targetPaint.alpha = (it.animatedValue as Float).toInt() }
-            it.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {
-                    //
-                }
-
-                override fun onAnimationEnd(animation: Animator?) {
-                    listener?.onClosed()
-                }
-
-                override fun onAnimationCancel(animation: Animator?) {
-                    //
-                }
-
-                override fun onAnimationStart(animation: Animator?) {
-                    //
-                }
-            })
-
-            it.start()
-        }
+        target.hide(object : Target.OnStateChangedListener {
+            override fun onClosed() {
+                listener?.onClosed()
+            }
+        })
     }
 
     interface OnStateChangedListener {
         fun onClosed()
-        
+
         fun onClicked()
     }
 

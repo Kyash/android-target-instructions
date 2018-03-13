@@ -1,20 +1,15 @@
 package co.kyash.targetinstructions
 
 import android.animation.Animator
-import android.animation.TimeInterpolator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
-import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import co.kyash.spotinstructions.R
-import co.kyash.spotinstructions.Spot
 
 class InstructionsView @JvmOverloads constructor(
         context: Context,
@@ -22,10 +17,13 @@ class InstructionsView @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    companion object {
+        private val DEFAULT_ANIMATION_PER = 1000f
+    }
+
     private val paint = Paint()
-    private val spotPaint = Paint()
-    private var currentSpot: Spot? = null
-    private var widthAnimator: ValueAnimator? = null
+    private val targetPaint = Paint()
+    private var currentTarget: Target? = null
 
     var overlayColor: Int = ContextCompat.getColor(context, R.color.default_cover)
 
@@ -36,9 +34,9 @@ class InstructionsView @JvmOverloads constructor(
         bringToFront()
         setWillNotDraw(false)
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        spotPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        targetPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         setOnClickListener({
-            if (widthAnimator != null && !widthAnimator!!.isRunning && widthAnimator!!.animatedValue as Float > 0) {
+            if (currentTarget != null && !currentTarget!!.isAnimating()) {
                 listener?.onClicked()
             }
         })
@@ -48,37 +46,28 @@ class InstructionsView @JvmOverloads constructor(
         super.onDraw(canvas)
         paint.color = overlayColor
         canvas?.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), paint)
-        if (widthAnimator != null && currentSpot != null) {
-            val factor = (widthAnimator!!.animatedValue as Float) / 1000f
 
-            val left = currentSpot!!.getLeft() - currentSpot!!.getPadding()
-            val top = currentSpot!!.getTop() - currentSpot!!.getPadding()
-            val right = currentSpot!!.getLeft() + currentSpot!!.getWidth() + currentSpot!!.getPadding()
-            val bottom = currentSpot!!.getTop() + currentSpot!!.getHeight() + currentSpot!!.getPadding()
-            val radius = currentSpot!!.getRadius()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                canvas?.drawRoundRect(left, top, right, bottom, radius, radius, spotPaint)
-            } else {
-                canvas?.drawRect(left, top, right, bottom, spotPaint)
-            }
+        if (currentTarget != null && canvas != null) {
+            currentTarget!!.drawHighlight(canvas, targetPaint)
         }
     }
 
-    fun turnUp(spot: Spot, duration: Long, interpolator: TimeInterpolator) {
-        currentSpot = spot
-        widthAnimator = ValueAnimator.ofFloat(0f, 1000f).apply {
-            addUpdateListener { invalidate() }
-            this.interpolator = interpolator
-            this.duration = duration
+    fun showTarget(target: Target) {
+        removeAllViews()
+        addView(target.messageView)
+
+        currentTarget = target
+        currentTarget?.highlightShowAnimator?.let {
+            it.addUpdateListener { invalidate() }
+            it.start()
         }
-        widthAnimator?.start()
+        currentTarget?.show()
     }
 
-    fun turnDown(radius: Float, duration: Long, interpolator: TimeInterpolator) {
-        widthAnimator = ValueAnimator.ofFloat(radius, 0f).apply {
-            addUpdateListener { invalidate() }
-            addListener(object : Animator.AnimatorListener {
+    fun hideTarget(target: Target) {
+        target.highlightHideAnimator.let {
+            it.addUpdateListener { targetPaint.alpha = (it.animatedValue as Float).toInt() }
+            it.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) {
                     //
                 }
@@ -95,14 +84,14 @@ class InstructionsView @JvmOverloads constructor(
                     //
                 }
             })
-            this.interpolator = interpolator
-            this.duration = duration
+
+            it.start()
         }
-        widthAnimator?.start()
     }
 
     interface OnStateChangedListener {
         fun onClosed()
+        
         fun onClicked()
     }
 

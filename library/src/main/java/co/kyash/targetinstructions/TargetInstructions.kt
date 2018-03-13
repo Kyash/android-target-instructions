@@ -1,4 +1,4 @@
-package co.kyash.spotinstructions
+package co.kyash.targetinstructions
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -8,10 +8,11 @@ import android.support.annotation.ColorInt
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
-import co.kyash.targetinstructions.InstructionsView
 import java.lang.ref.WeakReference
 
-class SpotInstructions private constructor(activity: Activity) {
+class TargetInstructions private constructor(
+        activity: Activity
+) {
 
     companion object {
         private val INSTRUCTIONS_DURATION = 300L
@@ -19,22 +20,22 @@ class SpotInstructions private constructor(activity: Activity) {
         @ColorInt
         private val DEFAULT_OVERLAY_COLOR = R.color.default_cover
         private val DEFAULT_DURATION = 500L
-        private val DEFAULT_ANIMATION: TimeInterpolator = DecelerateInterpolator()
+        private val DEFAULT_INTERPOLATOR: TimeInterpolator = DecelerateInterpolator()
 
-        fun with(activity: Activity) = SpotInstructions(activity)
+        fun with(activity: Activity) = TargetInstructions(activity)
     }
 
     private lateinit var instructionsViewWeakReference: WeakReference<InstructionsView>
     private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
 
-    private var spots = ArrayList<Spot>()
+    private var targets = ArrayList<Target>()
     private var duration = DEFAULT_DURATION
-    private var animation = DEFAULT_ANIMATION
+    private var interpolator = DEFAULT_INTERPOLATOR
     private var overlayColor = DEFAULT_OVERLAY_COLOR
 
-    fun setSpots(spots: List<Spot>): SpotInstructions {
-        this.spots.clear()
-        this.spots.addAll(spots)
+    fun setTargets(targets: List<Target>): TargetInstructions {
+        this.targets.clear()
+        this.targets.addAll(targets)
         return this
     }
 
@@ -42,7 +43,7 @@ class SpotInstructions private constructor(activity: Activity) {
 
     fun setDuration(duration: Long) = apply { this.duration = duration }
 
-    fun setAnimation(animation: TimeInterpolator) = apply { this.animation = animation }
+    fun setInterpolator(interpolator: TimeInterpolator) = apply { this.interpolator = interpolator }
 
     fun start() {
         val activity = activityWeakReference.get() ?: return
@@ -53,10 +54,10 @@ class SpotInstructions private constructor(activity: Activity) {
             this@apply.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             this@apply.listener = object : InstructionsView.OnStateChangedListener {
                 override fun onClosed() {
-                    if (spots.isNotEmpty()) {
-                        val spot = spots.removeAt(0)
-                        if (spots.size > 0) {
-                            showSpot()
+                    if (targets.isNotEmpty()) {
+                        val target = targets.removeAt(0)
+                        if (targets.size > 0) {
+                            showNextTarget()
                         } else {
                             finishInstruction()
                         }
@@ -64,7 +65,7 @@ class SpotInstructions private constructor(activity: Activity) {
                 }
 
                 override fun onClicked() {
-                    hideSpot()
+                    hideCurrentTarget()
                 }
             }
         }
@@ -73,21 +74,17 @@ class SpotInstructions private constructor(activity: Activity) {
         startInstruction()
     }
 
-    private fun showSpot() {
-        if (spots.isNotEmpty()) {
-            val spot = spots[0]
-            instructionsViewWeakReference.get().let {
-                it?.removeAllViews()
-                it?.addView(spot.getView())
-                it?.turnUp(spot, duration, animation)
-            }
+    private fun showNextTarget() {
+        if (targets.isNotEmpty()) {
+            val target = targets[0]
+            instructionsViewWeakReference.get()?.showTarget(target)
         }
     }
 
-    private fun hideSpot() {
-        if (spots.isNotEmpty()) {
-            val spot = spots[0]
-            instructionsViewWeakReference.get()?.turnDown(spot.getRadius(), duration, animation)
+    private fun hideCurrentTarget() {
+        if (targets.isNotEmpty()) {
+            val target = targets[0]
+            instructionsViewWeakReference.get()?.hideTarget(target)
         }
     }
 
@@ -100,7 +97,7 @@ class SpotInstructions private constructor(activity: Activity) {
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-                    showSpot()
+                    showNextTarget()
                 }
 
                 override fun onAnimationCancel(animation: Animator?) {
@@ -125,7 +122,7 @@ class SpotInstructions private constructor(activity: Activity) {
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-                    // TODO
+
                 }
 
                 override fun onAnimationCancel(animation: Animator?) {
@@ -133,7 +130,7 @@ class SpotInstructions private constructor(activity: Activity) {
                 }
 
                 override fun onAnimationStart(animation: Animator?) {
-                    //
+                    // TODO
                 }
 
             })

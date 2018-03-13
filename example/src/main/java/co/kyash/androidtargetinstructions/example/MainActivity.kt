@@ -4,9 +4,10 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewTreeObserver
+import android.view.animation.BounceInterpolator
 import co.kyash.androidtargetinstructions.example.databinding.ActivityMainBinding
-import co.kyash.spotinstructions.SimpleSpot
-import co.kyash.spotinstructions.SpotInstructions
+import co.kyash.targetinstructions.SimpleTarget
+import co.kyash.targetinstructions.TargetInstructions
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,18 +22,19 @@ class MainActivity : AppCompatActivity() {
             override fun onGlobalLayout() {
                 binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val spot1 = SimpleSpot.Builder(this@MainActivity).setPoint(binding.fab)
+                val target1 = SimpleTarget.Builder(this@MainActivity).setPoint(binding.fab)
                         .setTitle("First title")
                         .setDescription("First description")
                         .build()
 
-                val spot2 = SimpleSpot.Builder(this@MainActivity).setPoint(binding.title)
+                val target2 = SimpleTarget.Builder(this@MainActivity).setPoint(binding.title)
                         .setTitle("Second title")
                         .setDescription("Second description")
                         .build()
 
-                SpotInstructions.with(this@MainActivity)
-                        .setSpots(arrayListOf(spot1, spot2))
+                TargetInstructions.with(this@MainActivity)
+                        .setTargets(arrayListOf(target1, target2))
+                        .setInterpolator(BounceInterpolator())
                         .start()
             }
         })

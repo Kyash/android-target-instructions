@@ -3,11 +3,9 @@ package co.kyash.targetinstructions
 import android.app.Activity
 import android.support.annotation.DimenRes
 import android.view.View
-import co.kyash.spotinstructions.R
-import co.kyash.spotinstructions.Spot
 import java.lang.ref.WeakReference
 
-abstract class AbstractSpotBuilder<T : AbstractSpotBuilder<T, S>, S : Spot>(
+abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target>(
         activity: Activity
 ) {
 
@@ -18,8 +16,8 @@ abstract class AbstractSpotBuilder<T : AbstractSpotBuilder<T, S>, S : Spot>(
     var width = 0f
     var height = 0f
 
-    var radius = activity.resources.getDimension(R.dimen.default_spot_radius)
-    var padding = activity.resources.getDimension(R.dimen.default_spot_padding)
+    var radius = activity.resources.getDimension(R.dimen.default_target_radius)
+    var padding = activity.resources.getDimension(R.dimen.default_target_padding)
 
     abstract fun self(): T
 

@@ -1,4 +1,4 @@
-package co.kyash.spotinstructions;
+package co.kyash.targetinstructions;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

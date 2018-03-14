@@ -26,7 +26,7 @@ class TargetInstructions private constructor(
         fun with(activity: Activity) = TargetInstructions(activity)
     }
 
-    private lateinit var instructionsViewWeakReference: WeakReference<InstructionsView>
+    private val instructionsViewWeakReference: WeakReference<InstructionsView>
     private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
 
     private var targets = ArrayList<Target>()
@@ -34,20 +34,7 @@ class TargetInstructions private constructor(
     private var fadeInterpolator = DEFAULT_FADE_INTERPOLATOR
     private var overlayColor = DEFAULT_OVERLAY_COLOR
 
-    fun setTargets(targets: List<Target>): TargetInstructions = apply {
-        this.targets.clear()
-        this.targets.addAll(targets)
-    }
-
-    fun setOverlayColor(@ColorInt overlayColor: Int) = apply { this.overlayColor = overlayColor }
-
-    fun setFadeDuration(fadeDuration: Long) = apply { this.fadeDuration = fadeDuration }
-
-    fun setFadeInterpolator(fadeInterpolator: TimeInterpolator) = apply { this.fadeInterpolator = fadeInterpolator }
-
-    fun start() {
-        val activity = activityWeakReference.get() ?: return
-
+    init {
         val decorView = activity.window.decorView
         val instructionsView = InstructionsView(activity).apply {
             this@apply.overlayColor = overlayColor
@@ -71,7 +58,20 @@ class TargetInstructions private constructor(
         }
         instructionsViewWeakReference = WeakReference(instructionsView)
         (decorView as ViewGroup).addView(instructionsView)
+    }
 
+    fun setTargets(targets: List<Target>): TargetInstructions = apply {
+        this.targets.clear()
+        this.targets.addAll(targets)
+    }
+
+    fun setOverlayColor(@ColorInt overlayColor: Int) = apply { this.overlayColor = overlayColor }
+
+    fun setFadeDuration(fadeDuration: Long) = apply { this.fadeDuration = fadeDuration }
+
+    fun setFadeInterpolator(fadeInterpolator: TimeInterpolator) = apply { this.fadeInterpolator = fadeInterpolator }
+
+    fun start() {
         startInstruction()
     }
 

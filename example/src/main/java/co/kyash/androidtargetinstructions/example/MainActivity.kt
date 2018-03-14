@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
                         .setDescription("First description")
                         .setListener(object : Target.OnStateChangedListener {
                             override fun onClosed() {
-                                binding.scrollview.smoothScrollTo(0, binding.root.bottom)
+                                binding.scrollview.smoothScrollBy(0, 10000)
                             }
                         })
                         .build()
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                 val target2 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.message)
                         .setTitle("Second title")
                         .setDescription("Second description")
-                        .setStartDelayMillis(200L)
+                        .setStartDelayMillis(500L)
                         .build()
 
                 TargetInstructions.with(this@MainActivity)

@@ -18,9 +18,8 @@ class InstructionsView @JvmOverloads constructor(
     private val paint = Paint()
     private var currentTarget: Target? = null
 
-    var overlayColor: Int = ContextCompat.getColor(context, R.color.default_cover)
-
-    var listener: OnStateChangedListener? = null
+    internal var overlayColor: Int = ContextCompat.getColor(context, R.color.default_cover)
+    internal var listener: OnStateChangedListener? = null
 
     init {
         id = R.id.instructions_view
@@ -44,7 +43,7 @@ class InstructionsView @JvmOverloads constructor(
         }
     }
 
-    fun showTarget(target: Target) {
+    internal fun showTarget(target: Target) {
         removeAllViews()
         addView(target.messageView)
 
@@ -52,7 +51,7 @@ class InstructionsView @JvmOverloads constructor(
         currentTarget?.show()
     }
 
-    fun hideTarget(target: Target) {
+    internal fun hideTarget(target: Target) {
         target.hideImmediately()
         listener?.onTargetClosed()
     }

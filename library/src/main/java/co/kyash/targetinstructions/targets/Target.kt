@@ -75,6 +75,10 @@ abstract class Target(
         return if (top - height / 2 >= screenSize.y / 2) Position.ABOVE else Position.BELOW
     }
 
+    internal fun getCenterX() = left + width / 2
+
+    internal fun getCenterY() = top + height / 2
+
     interface OnStateChangedListener {
         fun onClosed()
     }

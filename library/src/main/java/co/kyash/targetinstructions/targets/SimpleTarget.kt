@@ -1,12 +1,14 @@
 package co.kyash.targetinstructions.targets
 
 import android.app.Activity
+import android.support.annotation.DrawableRes
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.OvershootInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import co.kyash.targetinstructions.AbstractTargetBuilder
@@ -46,13 +48,13 @@ class SimpleTarget(
         val container = messageView.findViewById<LinearLayout>(R.id.container)
         val margin = messageView.context.resources.getDimension(R.dimen.simple_target_message_margin)
 
-        val topCaret = container.findViewById<View>(R.id.top_caret)
-        val bottomCaret = container.findViewById<View>(R.id.bottom_caret)
+        val topCaret = container.findViewById<ImageView>(R.id.top_caret)
+        val bottomCaret = container.findViewById<ImageView>(R.id.bottom_caret)
 
         when (positionType) {
             Position.ABOVE -> {
                 if (container.height > 0) {
-                    bottomCaret.x = left
+                    bottomCaret.x = getCenterX() - bottomCaret.width / 2
                     bottomCaret.visibility = View.VISIBLE
                     container.y = top - container.height.toFloat() - margin
                     animateMessage(container.y)
@@ -60,7 +62,7 @@ class SimpleTarget(
                     messageView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
                             messageView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                            bottomCaret.x = left
+                            bottomCaret.x = getCenterX() - bottomCaret.width / 2
                             bottomCaret.visibility = View.VISIBLE
                             container.y = top - container.height.toFloat() - margin
                             animateMessage(container.y)
@@ -69,7 +71,7 @@ class SimpleTarget(
                 }
             }
             Position.BELOW -> {
-                topCaret.x = left
+                topCaret.x = getCenterX() - topCaret.width / 2
                 topCaret.visibility = View.VISIBLE
                 container.y = top + height + margin
                 animateMessage(container.y)
@@ -82,7 +84,7 @@ class SimpleTarget(
     }
 
     private fun animateMessage(pivotY: Float) {
-        val fadeInAnimation = ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.ABSOLUTE, pivotY).apply {
+        val animation = ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.ABSOLUTE, pivotY).apply {
             this.interpolator = OvershootInterpolator()
             repeatCount = 0
             duration = 400
@@ -102,12 +104,18 @@ class SimpleTarget(
 
             })
         }
-        messageView.startAnimation(fadeInAnimation)
+        messageView.startAnimation(animation)
     }
 
     class Builder(context: Activity) : AbstractTargetBuilder<Builder, SimpleTarget>(context) {
-        private var title: CharSequence? = null
-        private var description: CharSequence? = null
+        private lateinit var title: CharSequence
+        private lateinit var description: CharSequence
+
+        @DrawableRes
+        private var topCaretDrawableResId = R.drawable.img_caret_top
+        @DrawableRes
+        private var bottomCaretDrawableResId = R.drawable.img_caret_bottom
+
         private var listener: OnStateChangedListener? = null
 
         override fun self(): Builder = this
@@ -125,10 +133,18 @@ class SimpleTarget(
             } else {
                 val targetView = viewWeakReference?.get()
 
-                val messageView = activity.layoutInflater.inflate(R.layout.layout_simple, null)
-                (messageView.findViewById(R.id.title) as TextView).text = title
-                (messageView.findViewById(R.id.description) as TextView).text = description
-                messageView.layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+                val messageView = activity.layoutInflater.inflate(R.layout.layout_simple, null).apply {
+                    (findViewById<TextView>(R.id.title)).text = title
+                    (findViewById<TextView>(R.id.description)).text = description
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+
+                    findViewById<ImageView>(R.id.top_caret).apply {
+                        setImageResource(topCaretDrawableResId)
+                    }
+                    findViewById<ImageView>(R.id.bottom_caret).apply {
+                        setImageResource(bottomCaretDrawableResId)
+                    }
+                }
 
                 return SimpleTarget(
                         left = left,

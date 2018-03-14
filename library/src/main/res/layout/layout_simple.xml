@@ -8,18 +8,17 @@
     android:padding="16dp"
     android:visibility="invisible">
 
-    <View
+    <ImageView
         android:id="@+id/top_caret"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="#000000"
+        android:background="#ffffff"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -29,7 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:gravity="center_horizontal"
-            android:textColor="@android:color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -38,16 +36,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:textColor="@android:color/white"
             android:textSize="18sp" />
 
     </LinearLayout>
 
-    <View
+    <ImageView
         android:id="@+id/bottom_caret"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="invisible" />
 
 </LinearLayout>

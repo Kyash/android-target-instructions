@@ -123,7 +123,9 @@ class TargetInstructions private constructor(
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-
+                    val activity = activityWeakReference.get() ?: return
+                    val decorView = activity.window.decorView
+                    (decorView as ViewGroup).removeView(instructionsViewWeakReference.get())
                 }
 
                 override fun onAnimationCancel(animation: Animator?) {

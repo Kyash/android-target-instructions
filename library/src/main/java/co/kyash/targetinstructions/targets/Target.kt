@@ -55,7 +55,6 @@ abstract class Target(
     }
 
     interface OnStateChangedListener {
-
         fun onClosed()
     }
 

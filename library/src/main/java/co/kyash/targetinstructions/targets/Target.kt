@@ -1,40 +1,52 @@
 package co.kyash.targetinstructions.targets
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.os.Build
+import android.os.Handler
 import android.view.View
 import android.view.WindowManager
 
 abstract class Target(
-        open val left: Float,
-        open val top: Float,
-        open val width: Float,
-        open val height: Float,
+        open var left: Float,
+        open var top: Float,
+        open var width: Float,
+        open var height: Float,
         open val radius: Float,
-        open val padding: Float,
-        open val messageView: View
+        open val paddingLeft: Float,
+        open val paddingTop: Float,
+        open val paddingRight: Float,
+        open val paddingBottom: Float,
+        open val messageView: View,
+        open val targetView: View? = null,
+        open val delay: Long = 0L
 ) {
 
-    val targetPaint = Paint().apply {
+    private val targetPaint = Paint().apply {
         xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
     }
 
-    enum class Position {
+    internal enum class Position {
         ABOVE,
         BELOW
     }
 
-    abstract fun show(listener: ValueAnimator.AnimatorUpdateListener? = null)
+    internal fun show() {
+        Handler().postDelayed({
+            updateCoordinate()
+            showImmediately()
+        }, delay)
+    }
 
-    abstract fun hide(listener: OnStateChangedListener)
+    internal abstract fun showImmediately()
 
-    open fun drawHighlight(canvas: Canvas) {
-        val left = this.left - this.padding
-        val top = this.top - this.padding
-        val right = this.left + this.width + this.padding
-        val bottom = this.top + this.height + this.padding
+    internal abstract fun hideImmediately()
+
+    internal open fun drawHighlight(canvas: Canvas) {
+        val left = this.left - this.paddingLeft
+        val top = this.top - this.paddingTop
+        val right = this.left + this.width + this.paddingRight
+        val bottom = this.top + this.height + this.paddingBottom
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawRoundRect(left, top, right, bottom, radius, radius, targetPaint)
@@ -43,11 +55,20 @@ abstract class Target(
         }
     }
 
-    open fun canClick(): Boolean {
-        return true
+    fun updateCoordinate() {
+        if (targetView != null) {
+            val location = IntArray(2)
+            targetView!!.getLocationInWindow(location)
+            left = location[0].toFloat()
+            top = location[1].toFloat()
+            width = targetView!!.width.toFloat()
+            height = targetView!!.height.toFloat()
+        }
     }
 
-    fun decideMessagePositionType(): Position {
+    internal open fun canClick(): Boolean = true
+
+    internal fun decideMessagePositionType(): Position {
         val screenSize = Point()
         (messageView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getSize(screenSize)
 

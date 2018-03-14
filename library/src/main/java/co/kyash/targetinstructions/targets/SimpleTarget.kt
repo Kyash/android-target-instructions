@@ -1,8 +1,6 @@
 package co.kyash.targetinstructions.targets
 
-import android.animation.ValueAnimator
 import android.app.Activity
-import android.os.Handler
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
@@ -15,26 +13,35 @@ import co.kyash.targetinstructions.AbstractTargetBuilder
 import co.kyash.targetinstructions.R
 
 class SimpleTarget(
-        override val left: Float,
-        override val top: Float,
-        override val width: Float,
-        override val height: Float,
+        override var left: Float,
+        override var top: Float,
+        override var width: Float,
+        override var height: Float,
         override val radius: Float,
-        override val padding: Float,
+        override val paddingLeft: Float,
+        override val paddingTop: Float,
+        override val paddingRight: Float,
+        override val paddingBottom: Float,
         override val messageView: View,
-        private val delay: Long,
+        override val targetView: View? = null,
+        override val delay: Long = 0L,
         private val listener: OnStateChangedListener?
-) : Target(left, top, width, height, radius, padding, messageView) {
+) : Target(
+        left,
+        top,
+        width,
+        height,
+        radius,
+        paddingLeft,
+        paddingTop,
+        paddingRight,
+        paddingBottom,
+        messageView,
+        targetView,
+        delay
+) {
 
-    override fun show(listener: ValueAnimator.AnimatorUpdateListener?) {
-        if (delay <= 0L) {
-            showImmediately()
-        } else {
-            Handler().postDelayed({ showImmediately() }, delay)
-        }
-    }
-
-    private fun showImmediately() {
+    override fun showImmediately() {
         val positionType = decideMessagePositionType()
         val container = messageView.findViewById<LinearLayout>(R.id.container)
         val margin = messageView.context.resources.getDimension(R.dimen.simple_target_message_margin)
@@ -70,9 +77,7 @@ class SimpleTarget(
         }
     }
 
-    override fun hide(listener: OnStateChangedListener) {
-        // hide immediately
-        listener.onClosed()
+    override fun hideImmediately() {
         this.listener?.onClosed()
     }
 
@@ -103,7 +108,6 @@ class SimpleTarget(
     class Builder(context: Activity) : AbstractTargetBuilder<Builder, SimpleTarget>(context) {
         private var title: CharSequence? = null
         private var description: CharSequence? = null
-        private var delay: Long = 0L
         private var listener: OnStateChangedListener? = null
 
         override fun self(): Builder = this
@@ -112,8 +116,6 @@ class SimpleTarget(
 
         fun setDescription(description: CharSequence): Builder = apply { this.description = description }
 
-        fun setDelay(delay: Long): Builder = apply { this.delay = delay }
-
         fun setListener(listener: OnStateChangedListener): Builder = apply { this.listener = listener }
 
         override fun build(): SimpleTarget {
@@ -121,6 +123,8 @@ class SimpleTarget(
             if (activity == null) {
                 throw IllegalStateException("activity is null")
             } else {
+                val targetView = viewWeakReference?.get()
+
                 val messageView = activity.layoutInflater.inflate(R.layout.layout_simple, null)
                 (messageView.findViewById(R.id.title) as TextView).text = title
                 (messageView.findViewById(R.id.description) as TextView).text = description
@@ -132,9 +136,13 @@ class SimpleTarget(
                         width = width,
                         height = height,
                         radius = radius,
-                        padding = padding,
+                        paddingLeft = paddingLeft,
+                        paddingTop = paddingTop,
+                        paddingRight = paddingRight,
+                        paddingBottom = paddingBottom,
                         messageView = messageView,
-                        delay = delay,
+                        targetView = targetView,
+                        delay = startDelayMillis,
                         listener = listener
                 )
             }

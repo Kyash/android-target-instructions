@@ -1,6 +1,5 @@
 package co.kyash.targetinstructions
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -30,7 +29,7 @@ class InstructionsView @JvmOverloads constructor(
         setLayerType(View.LAYER_TYPE_HARDWARE, null)
         setOnClickListener({
             if (currentTarget != null && currentTarget!!.canClick()) {
-                listener?.onClicked()
+                listener?.onTargetClicked()
             }
         })
     }
@@ -50,21 +49,18 @@ class InstructionsView @JvmOverloads constructor(
         addView(target.messageView)
 
         currentTarget = target
-        currentTarget?.show(ValueAnimator.AnimatorUpdateListener { invalidate() })
+        currentTarget?.show()
     }
 
     fun hideTarget(target: Target) {
-        target.hide(object : Target.OnStateChangedListener {
-            override fun onClosed() {
-                listener?.onClosed()
-            }
-        })
+        target.hideImmediately()
+        listener?.onTargetClosed()
     }
 
     interface OnStateChangedListener {
-        fun onClosed()
+        fun onTargetClosed()
 
-        fun onClicked()
+        fun onTargetClicked()
     }
 
 }

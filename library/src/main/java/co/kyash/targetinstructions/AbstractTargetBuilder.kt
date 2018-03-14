@@ -10,21 +10,28 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         activity: Activity
 ) {
 
-    val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
+    internal val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
+    internal var viewWeakReference: WeakReference<View>? = null
 
-    var left = 0f
-    var top = 0f
-    var width = 0f
-    var height = 0f
+    internal var left = 0f
+    internal var top = 0f
+    internal var width = 0f
+    internal var height = 0f
 
-    var radius = activity.resources.getDimension(R.dimen.default_target_radius)
-    var padding = activity.resources.getDimension(R.dimen.default_target_padding)
+    internal var radius = 0f
 
-    abstract fun self(): T
+    internal var paddingLeft = 0f
+    internal var paddingTop = 0f
+    internal var paddingRight = 0f
+    internal var paddingBottom = 0f
+
+    internal var startDelayMillis = 0L
+
+    internal abstract fun self(): T
 
     abstract fun build(): S
 
-    fun setPoint(left: Float, top: Float, width: Float, height: Float): T {
+    fun setCoordinate(left: Float, top: Float, width: Float, height: Float): T {
         this.left = left
         this.top = top
         this.width = width
@@ -32,10 +39,11 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         return self()
     }
 
-    fun setPoint(view: View): T {
+    fun setCoordinate(view: View): T {
+        viewWeakReference = WeakReference(view)
         val location = IntArray(2)
         view.getLocationInWindow(location)
-        return setPoint(location[0].toFloat(), location[1].toFloat(), view.width.toFloat(), view.height.toFloat())
+        return setCoordinate(location[0].toFloat(), location[1].toFloat(), view.width.toFloat(), view.height.toFloat())
     }
 
     fun setRadius(radius: Float): T {
@@ -52,8 +60,16 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         }
     }
 
+    fun setStartDelayMillis(startDelayMillis: Long): T {
+        this.startDelayMillis = startDelayMillis
+        return self()
+    }
+
     fun setPadding(padding: Float): T {
-        this.padding = padding
+        this.paddingLeft = padding
+        this.paddingTop = padding
+        this.paddingRight = padding
+        this.paddingBottom = padding
         return self()
     }
 
@@ -63,6 +79,36 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
             throw IllegalStateException("activity is null")
         } else {
             setPadding(activity.resources.getDimension(paddingResId))
+        }
+    }
+
+    fun setPaddingVertical(padding: Float): T {
+        this.paddingTop = padding
+        this.paddingBottom = padding
+        return self()
+    }
+
+    fun setPaddingVertical(@DimenRes paddingResId: Int): T {
+        val activity = activityWeakReference.get()
+        return if (activity == null) {
+            throw IllegalStateException("activity is null")
+        } else {
+            setPaddingVertical(activity.resources.getDimension(paddingResId))
+        }
+    }
+
+    fun setPaddingHorizontal(padding: Float): T {
+        this.paddingLeft = padding
+        this.paddingRight = padding
+        return self()
+    }
+
+    fun setPaddingHorizontal(@DimenRes paddingResId: Int): T {
+        val activity = activityWeakReference.get()
+        return if (activity == null) {
+            throw IllegalStateException("activity is null")
+        } else {
+            setPaddingHorizontal(activity.resources.getDimension(paddingResId))
         }
     }
 

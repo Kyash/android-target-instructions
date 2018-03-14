@@ -20,8 +20,8 @@ class TargetInstructions private constructor(
 
         @ColorInt
         private val DEFAULT_OVERLAY_COLOR = R.color.default_cover
-        private val DEFAULT_DURATION = 500L
-        private val DEFAULT_INTERPOLATOR: TimeInterpolator = DecelerateInterpolator()
+        private val DEFAULT_FADE_DURATION = 500L
+        private val DEFAULT_FADE_INTERPOLATOR: TimeInterpolator = DecelerateInterpolator()
 
         fun with(activity: Activity) = TargetInstructions(activity)
     }
@@ -30,21 +30,20 @@ class TargetInstructions private constructor(
     private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
 
     private var targets = ArrayList<Target>()
-    private var duration = DEFAULT_DURATION
-    private var interpolator = DEFAULT_INTERPOLATOR
+    private var fadeDuration = DEFAULT_FADE_DURATION
+    private var fadeInterpolator = DEFAULT_FADE_INTERPOLATOR
     private var overlayColor = DEFAULT_OVERLAY_COLOR
 
-    fun setTargets(targets: List<Target>): TargetInstructions {
+    fun setTargets(targets: List<Target>): TargetInstructions = apply {
         this.targets.clear()
         this.targets.addAll(targets)
-        return this
     }
 
     fun setOverlayColor(@ColorInt overlayColor: Int) = apply { this.overlayColor = overlayColor }
 
-    fun setDuration(duration: Long) = apply { this.duration = duration }
+    fun setFadeDuration(fadeDuration: Long) = apply { this.fadeDuration = fadeDuration }
 
-    fun setInterpolator(interpolator: TimeInterpolator) = apply { this.interpolator = interpolator }
+    fun setFadeInterpolator(fadeInterpolator: TimeInterpolator) = apply { this.fadeInterpolator = fadeInterpolator }
 
     fun start() {
         val activity = activityWeakReference.get() ?: return
@@ -54,10 +53,10 @@ class TargetInstructions private constructor(
             this@apply.overlayColor = overlayColor
             this@apply.layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             this@apply.listener = object : InstructionsView.OnStateChangedListener {
-                override fun onClosed() {
+                override fun onTargetClosed() {
                     if (targets.isNotEmpty()) {
-                        val target = targets.removeAt(0)
-                        if (targets.size > 0) {
+                        targets.removeAt(0)
+                        if (targets.isNotEmpty()) {
                             showNextTarget()
                         } else {
                             finishInstruction()
@@ -65,20 +64,20 @@ class TargetInstructions private constructor(
                     }
                 }
 
-                override fun onClicked() {
+                override fun onTargetClicked() {
                     hideCurrentTarget()
                 }
             }
         }
         instructionsViewWeakReference = WeakReference(instructionsView)
         (decorView as ViewGroup).addView(instructionsView)
+
         startInstruction()
     }
 
     private fun showNextTarget() {
         if (targets.isNotEmpty()) {
-            val target = targets[0]
-            instructionsViewWeakReference.get()?.showTarget(target)
+            instructionsViewWeakReference.get()?.showTarget(targets[0])
         }
     }
 
@@ -133,7 +132,7 @@ class TargetInstructions private constructor(
                 }
 
                 override fun onAnimationStart(animation: Animator?) {
-                    // TODO
+                    //
                 }
 
             })

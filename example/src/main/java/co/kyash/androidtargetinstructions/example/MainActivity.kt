@@ -7,6 +7,7 @@ import android.view.ViewTreeObserver
 import co.kyash.androidtargetinstructions.example.databinding.ActivityMainBinding
 import co.kyash.targetinstructions.TargetInstructions
 import co.kyash.targetinstructions.targets.SimpleTarget
+import co.kyash.targetinstructions.targets.Target
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,15 +22,21 @@ class MainActivity : AppCompatActivity() {
             override fun onGlobalLayout() {
                 binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val target1 = SimpleTarget.Builder(this@MainActivity).setPoint(binding.fab)
+                val target1 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.fab)
                         .setTitle("First title")
                         .setRadius(100f)
                         .setDescription("First description")
+                        .setListener(object : Target.OnStateChangedListener {
+                            override fun onClosed() {
+                                binding.scrollview.smoothScrollTo(0, binding.root.bottom)
+                            }
+                        })
                         .build()
 
-                val target2 = SimpleTarget.Builder(this@MainActivity).setPoint(binding.title)
+                val target2 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.message)
                         .setTitle("Second title")
                         .setDescription("Second description")
+                        .setStartDelayMillis(200L)
                         .build()
 
                 TargetInstructions.with(this@MainActivity)

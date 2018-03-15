@@ -40,16 +40,11 @@ class MainActivity : AppCompatActivity() {
                 .setTitle("Floating Action Button")
                 .setRadius(100f)
                 .setDescription("This is the floating action button.")
-                .setTextColorResId(R.color.red)
-                .setTitleDimenResId(R.dimen.simple_title)
-                .setDescriptionDimenResId(R.dimen.simple_description)
                 .build()
 
         val target2 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.firstText)
                 .setTitle("First text")
                 .setDescription("This is the first text.")
-                .setTitleDimenResId(R.dimen.simple_title)
-                .setDescriptionDimenResId(R.dimen.simple_description)
                 .setHighlightPadding(R.dimen.simple_hightlight_padding)
                 .setListener(object : Target.OnStateChangedListener {
                     override fun onClosed() {
@@ -61,13 +56,7 @@ class MainActivity : AppCompatActivity() {
         val target3 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.secondText)
                 .setTitle("Second text")
                 .setDescription("This is the second text.")
-                .setTitleDimenResId(R.dimen.simple_title)
-                .setTextColorResId(android.R.color.white)
-                .setBottomCaretDrawableResId(R.drawable.img_caret_bottom_black)
-                .setTopCaretDrawableResId(R.drawable.img_caret_top_black)
-                .setMessageBgDrawableResId(R.drawable.message_bg_black)
-                .setDescriptionDimenResId(R.dimen.simple_description)
-                .setMessageMarginBetweenTitleAndDescription(R.dimen.space_32dp)
+                .setMessageLayoutResId(R.layout.layout_instruction_simple_message_black)
                 .setStartDelayMillis(200L)
                 .build()
 

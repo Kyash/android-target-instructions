@@ -1,11 +1,7 @@
 package co.kyash.targetinstructions.targets
 
 import android.app.Activity
-import android.support.annotation.ColorRes
-import android.support.annotation.DimenRes
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
-import android.util.TypedValue
+import android.support.annotation.LayoutRes
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
@@ -53,8 +49,6 @@ class SimpleTarget(
     override fun showImmediately() {
         val positionType = decideMessagePositionType()
         val container = messageView.findViewById<LinearLayout>(R.id.container)
-        val margin = messageView.context.resources.getDimension(R.dimen.simple_target_message_margin)
-
         val topCaret = container.findViewById<ImageView>(R.id.top_caret)
         val bottomCaret = container.findViewById<ImageView>(R.id.bottom_caret)
 
@@ -63,7 +57,7 @@ class SimpleTarget(
                 if (container.height > 0) {
                     bottomCaret.x = getCenterX() - bottomCaret.width / 2
                     bottomCaret.visibility = View.VISIBLE
-                    container.y = top - container.height.toFloat() - margin
+                    container.y = top - container.height.toFloat() - highlightPaddingTop
                     animateMessage(container.y)
                 } else {
                     messageView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -71,7 +65,7 @@ class SimpleTarget(
                             messageView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                             bottomCaret.x = getCenterX() - bottomCaret.width / 2
                             bottomCaret.visibility = View.VISIBLE
-                            container.y = top - container.height.toFloat() - margin
+                            container.y = top - container.height.toFloat() - highlightPaddingTop
                             animateMessage(container.y)
                         }
                     })
@@ -80,7 +74,7 @@ class SimpleTarget(
             Position.BELOW -> {
                 topCaret.x = getCenterX() - topCaret.width / 2
                 topCaret.visibility = View.VISIBLE
-                container.y = top + height + margin
+                container.y = top + height + highlightPaddingBottom
                 animateMessage(container.y)
             }
         }
@@ -119,34 +113,10 @@ class SimpleTarget(
         private lateinit var title: CharSequence
         private lateinit var description: CharSequence
 
-        @DrawableRes
-        private var topCaretDrawableResId = R.drawable.img_caret_top
-        @DrawableRes
-        private var bottomCaretDrawableResId = R.drawable.img_caret_bottom
-        @DrawableRes
-        private var messageBgDrawableResId = R.drawable.message_bg
-
-        @ColorRes
-        private var textColorResId = android.R.color.black
-
-        @DimenRes
-        private var titleDimenResId = 0
-        @DimenRes
-        private var descriptionDimenResId = 0
+        @LayoutRes
+        private var messageLayoutResId = R.layout.layout_simple_message
 
         private var messageAnimationDuration: Long = 300L
-
-        @DimenRes
-        private var messageMarginLeftResId = R.dimen.simple_target_message_margin
-        @DimenRes
-        private var messageMarginTopResId = R.dimen.simple_target_message_margin
-        @DimenRes
-        private var messageMarginRightResId = R.dimen.simple_target_message_margin
-        @DimenRes
-        private var messageMarginBottomResId = R.dimen.simple_target_message_margin
-
-        @DimenRes
-        private var messageMarginBetweenTitleAndDescription = R.dimen.simple_target_message_margin_between_title_and_description
 
         private var messageInterpolator: Interpolator = OvershootInterpolator()
 
@@ -160,43 +130,14 @@ class SimpleTarget(
 
         fun setListener(listener: OnStateChangedListener): Builder = apply { this.listener = listener }
 
-        fun setTopCaretDrawableResId(@DrawableRes topCaretDrawableResId: Int) = apply { this.topCaretDrawableResId = topCaretDrawableResId }
-
-        fun setBottomCaretDrawableResId(@DrawableRes bottomCaretDrawableResId: Int) = apply { this.bottomCaretDrawableResId = bottomCaretDrawableResId }
+        fun setMessageLayoutResId(@LayoutRes messageLayoutResId: Int) = apply {
+            this.messageLayoutResId = messageLayoutResId
+        }
 
         fun setMessageAnimationDuration(duration: Long) = apply { this.messageAnimationDuration = duration }
 
-        fun setTextColorResId(@ColorRes textColorResId: Int) = apply { this.textColorResId = textColorResId }
-
-        fun setTitleDimenResId(@DimenRes titleDimenResId: Int) = apply { this.titleDimenResId = titleDimenResId }
-
-        fun setDescriptionDimenResId(@DimenRes descriptionDimenResId: Int) = apply { this.descriptionDimenResId = descriptionDimenResId }
-
-        fun setMessageMargin(@DimenRes messageMarginResId: Int) = apply {
-            this.messageMarginLeftResId = messageMarginResId
-            this.messageMarginTopResId = messageMarginResId
-            this.messageMarginRightResId = messageMarginResId
-            this.messageMarginBottomResId = messageMarginResId
-        }
-
-        fun setMessageMarginHorizontal(@DimenRes messageMarginResId: Int) = apply {
-            this.messageMarginLeftResId = messageMarginResId
-            this.messageMarginRightResId = messageMarginResId
-        }
-
-        fun setMessageMarginVertical(@DimenRes messageMarginResId: Int) = apply {
-            this.messageMarginTopResId = messageMarginResId
-            this.messageMarginBottomResId = messageMarginResId
-        }
-
-        fun setMessageBgDrawableResId(@DrawableRes messageBgDrawableResId: Int) = apply { this.messageBgDrawableResId = messageBgDrawableResId }
-
         fun setMessageInterpolator(interpolator: Interpolator) = apply {
             this.messageInterpolator = interpolator
-        }
-
-        fun setMessageMarginBetweenTitleAndDescription(messageMarginBetweenTitleAndDescription: Int) = apply {
-            this.messageMarginBetweenTitleAndDescription = messageMarginBetweenTitleAndDescription
         }
 
         override fun build(): SimpleTarget {
@@ -206,43 +147,10 @@ class SimpleTarget(
             } else {
                 val targetView = viewWeakReference?.get()
 
-                val messageView = activity.layoutInflater.inflate(R.layout.layout_simple, null).apply {
+                val messageView = activity.layoutInflater.inflate(messageLayoutResId, null).apply {
                     layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-
-                    // Modify margin
-                    setPadding(
-                            resources.getDimension(messageMarginLeftResId).toInt(),
-                            resources.getDimension(messageMarginTopResId).toInt(),
-                            resources.getDimension(messageMarginRightResId).toInt(),
-                            resources.getDimension(messageMarginBottomResId).toInt()
-                    )
-
-                    // Set texts
-                    (findViewById<TextView>(R.id.title)).apply {
-                        text = title
-                        setTextColor(ContextCompat.getColor(context, textColorResId))
-                        if (titleDimenResId > 0) setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(titleDimenResId))
-                    }
-                    (findViewById<TextView>(R.id.description)).apply {
-                        text = description
-                        setTextColor(ContextCompat.getColor(context, textColorResId))
-                        if (descriptionDimenResId > 0) setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(descriptionDimenResId))
-
-                        (layoutParams as LinearLayout.LayoutParams).run {
-                            setMargins(leftMargin, resources.getDimension(messageMarginBetweenTitleAndDescription).toInt(), rightMargin, bottomMargin)
-                        }
-                        messageMarginBetweenTitleAndDescription
-                    }
-
-                    // Modify message layout
-                    findViewById<View>(R.id.message).setBackgroundResource(messageBgDrawableResId)
-
-                    findViewById<ImageView>(R.id.top_caret).apply {
-                        setImageResource(topCaretDrawableResId)
-                    }
-                    findViewById<ImageView>(R.id.bottom_caret).apply {
-                        setImageResource(bottomCaretDrawableResId)
-                    }
+                    (findViewById<TextView>(R.id.title)).text = title
+                    (findViewById<TextView>(R.id.description)).text = description
                 }
 
                 return SimpleTarget(

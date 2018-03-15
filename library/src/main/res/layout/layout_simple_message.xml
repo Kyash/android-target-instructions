@@ -12,6 +12,7 @@
         android:id="@+id/top_caret"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/img_caret_top"
         android:visibility="invisible" />
 
     <LinearLayout
@@ -19,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="#ffffff"
+        android:background="@drawable/message_bg"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -44,6 +45,7 @@
         android:id="@+id/bottom_caret"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/img_caret_bottom"
         android:visibility="invisible" />
 
 </LinearLayout>

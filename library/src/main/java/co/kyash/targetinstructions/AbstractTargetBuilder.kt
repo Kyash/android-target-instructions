@@ -82,33 +82,33 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         }
     }
 
-    fun setHighlightPaddingVertical(padding: Float): T {
+    fun setHighlightVerticalPadding(padding: Float): T {
         this.highlightPaddingTop = padding
         this.highlightPaddingBottom = padding
         return self()
     }
 
-    fun setHighlightPaddingVertical(@DimenRes paddingResId: Int): T {
+    fun setHighlightVerticalPadding(@DimenRes paddingResId: Int): T {
         val activity = activityWeakReference.get()
         return if (activity == null) {
             throw IllegalStateException("activity is null")
         } else {
-            setHighlightPaddingVertical(activity.resources.getDimension(paddingResId))
+            setHighlightVerticalPadding(activity.resources.getDimension(paddingResId))
         }
     }
 
-    fun setPaddingHorizontal(padding: Float): T {
+    fun setHighlightHorizontalPadding(padding: Float): T {
         this.hightlightPaddingLeft = padding
         this.highlightPaddingRight = padding
         return self()
     }
 
-    fun setPaddingHorizontal(@DimenRes paddingResId: Int): T {
+    fun setHighlightHorizontalPadding(@DimenRes paddingResId: Int): T {
         val activity = activityWeakReference.get()
         return if (activity == null) {
             throw IllegalStateException("activity is null")
         } else {
-            setPaddingHorizontal(activity.resources.getDimension(paddingResId))
+            setHighlightHorizontalPadding(activity.resources.getDimension(paddingResId))
         }
     }
 

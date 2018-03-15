@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                 .setTitle("Second text")
                 .setDescription("This is the second text.")
                 .setMessageLayoutResId(R.layout.layout_instruction_simple_message_black)
+                .setHighlightHorizontalPadding(R.dimen.space_minus_16dp)
                 .setStartDelayMillis(200L)
                 .build()
 

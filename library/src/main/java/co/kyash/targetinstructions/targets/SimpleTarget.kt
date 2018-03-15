@@ -189,6 +189,8 @@ class SimpleTarget(
             this.messageMarginBottomResId = messageMarginResId
         }
 
+        fun setMessageBgDrawableResId(@DrawableRes messageBgDrawableResId: Int) = apply { this.messageBgDrawableResId = messageBgDrawableResId }
+
         fun setMessageInterpolator(interpolator: Interpolator) = apply {
             this.messageInterpolator = interpolator
         }

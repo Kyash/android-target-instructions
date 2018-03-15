@@ -20,10 +20,10 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
 
     internal var radius = 0f
 
-    internal var paddingLeft = 0f
-    internal var paddingTop = 0f
-    internal var paddingRight = 0f
-    internal var paddingBottom = 0f
+    internal var hightlightPaddingLeft = 0f
+    internal var highlightPaddingTop = 0f
+    internal var highlightPaddingRight = 0f
+    internal var highlightPaddingBottom = 0f
 
     internal var startDelayMillis = 0L
 
@@ -65,41 +65,41 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         return self()
     }
 
-    fun setPadding(padding: Float): T {
-        this.paddingLeft = padding
-        this.paddingTop = padding
-        this.paddingRight = padding
-        this.paddingBottom = padding
+    fun setHighlightPadding(padding: Float): T {
+        this.hightlightPaddingLeft = padding
+        this.highlightPaddingTop = padding
+        this.highlightPaddingRight = padding
+        this.highlightPaddingBottom = padding
         return self()
     }
 
-    fun setPadding(@DimenRes paddingResId: Int): T {
+    fun setHighlightPadding(@DimenRes paddingResId: Int): T {
         val activity = activityWeakReference.get()
         return if (activity == null) {
             throw IllegalStateException("activity is null")
         } else {
-            setPadding(activity.resources.getDimension(paddingResId))
+            setHighlightPadding(activity.resources.getDimension(paddingResId))
         }
     }
 
-    fun setPaddingVertical(padding: Float): T {
-        this.paddingTop = padding
-        this.paddingBottom = padding
+    fun setHighlightPaddingVertical(padding: Float): T {
+        this.highlightPaddingTop = padding
+        this.highlightPaddingBottom = padding
         return self()
     }
 
-    fun setPaddingVertical(@DimenRes paddingResId: Int): T {
+    fun setHighlightPaddingVertical(@DimenRes paddingResId: Int): T {
         val activity = activityWeakReference.get()
         return if (activity == null) {
             throw IllegalStateException("activity is null")
         } else {
-            setPaddingVertical(activity.resources.getDimension(paddingResId))
+            setHighlightPaddingVertical(activity.resources.getDimension(paddingResId))
         }
     }
 
     fun setPaddingHorizontal(padding: Float): T {
-        this.paddingLeft = padding
-        this.paddingRight = padding
+        this.hightlightPaddingLeft = padding
+        this.highlightPaddingRight = padding
         return self()
     }
 

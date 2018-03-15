@@ -9,6 +9,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
+import android.view.animation.Interpolator
 import android.view.animation.OvershootInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
@@ -32,6 +33,7 @@ class SimpleTarget(
         override val targetView: View? = null,
         override val delay: Long = 0L,
         private val messageAnimationDuration: Long = 300L,
+        private val messageInterpolator: Interpolator,
         private val listener: OnStateChangedListener?
 ) : Target(
         left,
@@ -90,7 +92,7 @@ class SimpleTarget(
 
     private fun animateMessage(pivotY: Float) {
         val animation = ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.ABSOLUTE, pivotY).apply {
-            this.interpolator = OvershootInterpolator()
+            this.interpolator = messageInterpolator
             repeatCount = 0
             duration = this@SimpleTarget.messageAnimationDuration
             fillAfter = true
@@ -143,6 +145,11 @@ class SimpleTarget(
         @DimenRes
         private var messageMarginBottomResId = R.dimen.simple_target_message_margin
 
+        @DimenRes
+        private var messageMarginBetweenTitleAndDescription = R.dimen.simple_target_message_margin_between_title_and_description
+
+        private var messageInterpolator: Interpolator = OvershootInterpolator()
+
         private var listener: OnStateChangedListener? = null
 
         override fun self(): Builder = this
@@ -165,21 +172,29 @@ class SimpleTarget(
 
         fun setDescriptionDimenResId(@DimenRes descriptionDimenResId: Int) = apply { this.descriptionDimenResId = descriptionDimenResId }
 
-        fun setMessageMargin(@DimenRes messageMarginResId: Int) {
+        fun setMessageMargin(@DimenRes messageMarginResId: Int) = apply {
             this.messageMarginLeftResId = messageMarginResId
             this.messageMarginTopResId = messageMarginResId
             this.messageMarginRightResId = messageMarginResId
             this.messageMarginBottomResId = messageMarginResId
         }
 
-        fun setMessageMarginHorizontal(@DimenRes messageMarginResId: Int) {
+        fun setMessageMarginHorizontal(@DimenRes messageMarginResId: Int) = apply {
             this.messageMarginLeftResId = messageMarginResId
             this.messageMarginRightResId = messageMarginResId
         }
 
-        fun setMessageMarginVertical(@DimenRes messageMarginResId: Int) {
+        fun setMessageMarginVertical(@DimenRes messageMarginResId: Int) = apply {
             this.messageMarginTopResId = messageMarginResId
             this.messageMarginBottomResId = messageMarginResId
+        }
+
+        fun setMessageInterpolator(interpolator: Interpolator) = apply {
+            this.messageInterpolator = interpolator
+        }
+
+        fun setMessageMarginBetweenTitleAndDescription(messageMarginBetweenTitleAndDescription: Int) = apply {
+            this.messageMarginBetweenTitleAndDescription = messageMarginBetweenTitleAndDescription
         }
 
         override fun build(): SimpleTarget {
@@ -210,9 +225,14 @@ class SimpleTarget(
                         text = description
                         setTextColor(ContextCompat.getColor(context, textColorResId))
                         if (descriptionDimenResId > 0) setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(descriptionDimenResId))
+
+                        (layoutParams as LinearLayout.LayoutParams).run {
+                            setMargins(leftMargin, resources.getDimension(messageMarginBetweenTitleAndDescription).toInt(), rightMargin, bottomMargin)
+                        }
+                        messageMarginBetweenTitleAndDescription
                     }
 
-                    // Modify message
+                    // Modify message layout
                     findViewById<View>(R.id.message).setBackgroundResource(messageBgDrawableResId)
 
                     findViewById<ImageView>(R.id.top_caret).apply {
@@ -229,14 +249,15 @@ class SimpleTarget(
                         width = width,
                         height = height,
                         radius = radius,
-                        highlightPaddingLeft = paddingLeft,
-                        highlightPaddingTop = paddingTop,
-                        highlightPaddingRight = paddingRight,
-                        highlightPaddingBottom = paddingBottom,
+                        highlightPaddingLeft = hightlightPaddingLeft,
+                        highlightPaddingTop = highlightPaddingTop,
+                        highlightPaddingRight = highlightPaddingRight,
+                        highlightPaddingBottom = highlightPaddingBottom,
                         messageView = messageView,
                         targetView = targetView,
                         delay = startDelayMillis,
                         messageAnimationDuration = messageAnimationDuration,
+                        messageInterpolator = messageInterpolator,
                         listener = listener
                 )
             }

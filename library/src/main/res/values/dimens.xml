@@ -6,4 +6,6 @@
 
     <dimen name="simple_target_message_margin">16dp</dimen>
 
+    <dimen name="simple_target_message_margin_between_title_and_description">8dp</dimen>
+
 </resources>

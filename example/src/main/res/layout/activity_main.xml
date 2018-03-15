@@ -31,22 +31,26 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/first_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hello World!" />
+                    android:layout_gravity="center_horizontal"
+                    android:text="First text"
+                    android:textSize="20dp" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1200dp"
+                    android:layout_height="1000dp"
+                    android:layout_marginTop="@dimen/space_16dp"
                     android:background="@color/red" />
 
                 <TextView
-                    android:id="@+id/message"
+                    android:id="@+id/second_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/space_16dp"
-                    android:text="Message!" />
+                    android:text="Second text"
+                    android:textSize="20dp" />
 
                 <View
                     android:layout_width="match_parent"

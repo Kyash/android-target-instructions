@@ -2,6 +2,7 @@ package co.kyash.androidtargetinstructions.example
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewTreeObserver
 import co.kyash.androidtargetinstructions.example.databinding.ActivityMainBinding
@@ -21,32 +22,54 @@ class MainActivity : AppCompatActivity() {
         binding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                val target1 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.fab)
-                        .setTitle("First title")
-                        .setRadius(100f)
-                        .setDescription("First description")
-                        .setTextColorResId(R.color.red)
-                        .setTitleDimenResId(R.dimen.simple_title)
-                        .setDescriptionDimenResId(R.dimen.simple_description)
-                        .setListener(object : Target.OnStateChangedListener {
-                            override fun onClosed() {
-                                binding.scrollview.smoothScrollBy(0, 10000)
-                            }
-                        })
-                        .build()
-
-                val target2 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.message)
-                        .setTitle("Second title")
-                        .setDescription("Second description")
-                        .setStartDelayMillis(500L)
-                        .build()
-
-                TargetInstructions.with(this@MainActivity)
-                        .setTargets(arrayListOf(target1, target2))
-                        .start()
+                showInstructions()
             }
         })
+
+        binding.fab.setOnClickListener {
+            binding.scrollview.smoothScrollTo(0, 0)
+            Handler().postDelayed({
+                showInstructions()
+            }, 150)
+
+        }
+    }
+
+    private fun showInstructions() {
+        val target1 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.fab)
+                .setTitle("Floating Action Button")
+                .setRadius(100f)
+                .setDescription("This is the floating action button.")
+                .setTextColorResId(R.color.red)
+                .setTitleDimenResId(R.dimen.simple_title)
+                .setDescriptionDimenResId(R.dimen.simple_description)
+                .build()
+
+        val target2 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.firstText)
+                .setTitle("First text")
+                .setDescription("This is the first text.")
+                .setTitleDimenResId(R.dimen.simple_title)
+                .setDescriptionDimenResId(R.dimen.simple_description)
+                .setHighlightPadding(R.dimen.simple_hightlight_padding)
+                .setListener(object : Target.OnStateChangedListener {
+                    override fun onClosed() {
+                        binding.scrollview.smoothScrollBy(0, 10000)
+                    }
+                })
+                .build()
+
+        val target3 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.secondText)
+                .setTitle("Second text")
+                .setDescription("This is the second text.")
+                .setTitleDimenResId(R.dimen.simple_title)
+                .setDescriptionDimenResId(R.dimen.simple_description)
+                .setMessageMarginBetweenTitleAndDescription(R.dimen.space_32dp)
+                .setStartDelayMillis(200L)
+                .build()
+
+        TargetInstructions.with(this@MainActivity)
+                .setTargets(arrayListOf(target1, target2, target3))
+                .start()
     }
 
 }

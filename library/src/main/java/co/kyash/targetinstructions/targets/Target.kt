@@ -13,10 +13,10 @@ abstract class Target(
         open var width: Float,
         open var height: Float,
         open val radius: Float,
-        open val paddingLeft: Float,
-        open val paddingTop: Float,
-        open val paddingRight: Float,
-        open val paddingBottom: Float,
+        open val highlightPaddingLeft: Float,
+        open val highlightPaddingTop: Float,
+        open val highlightPaddingRight: Float,
+        open val highlightPaddingBottom: Float,
         open val messageView: View,
         open val targetView: View? = null,
         open val delay: Long = 0L
@@ -43,10 +43,10 @@ abstract class Target(
     internal abstract fun hideImmediately()
 
     internal open fun drawHighlight(canvas: Canvas) {
-        val left = this.left - this.paddingLeft
-        val top = this.top - this.paddingTop
-        val right = this.left + this.width + this.paddingRight
-        val bottom = this.top + this.height + this.paddingBottom
+        val left = this.left - this.highlightPaddingLeft
+        val top = this.top - this.highlightPaddingTop
+        val right = this.left + this.width + this.highlightPaddingRight
+        val bottom = this.top + this.height + this.highlightPaddingBottom
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawRoundRect(left, top, right, bottom, radius, radius, targetPaint)

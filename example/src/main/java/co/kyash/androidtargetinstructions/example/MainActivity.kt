@@ -26,6 +26,9 @@ class MainActivity : AppCompatActivity() {
                         .setTitle("First title")
                         .setRadius(100f)
                         .setDescription("First description")
+                        .setTextColorResId(R.color.red)
+                        .setTitleDimenResId(R.dimen.simple_title)
+                        .setDescriptionDimenResId(R.dimen.simple_description)
                         .setListener(object : Target.OnStateChangedListener {
                             override fun onClosed() {
                                 binding.scrollview.smoothScrollBy(0, 10000)

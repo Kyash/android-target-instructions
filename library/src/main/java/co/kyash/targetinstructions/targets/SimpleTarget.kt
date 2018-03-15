@@ -1,7 +1,11 @@
 package co.kyash.targetinstructions.targets
 
 import android.app.Activity
+import android.support.annotation.ColorRes
+import android.support.annotation.DimenRes
 import android.support.annotation.DrawableRes
+import android.support.v4.content.ContextCompat
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
@@ -20,13 +24,14 @@ class SimpleTarget(
         override var width: Float,
         override var height: Float,
         override val radius: Float,
-        override val paddingLeft: Float,
-        override val paddingTop: Float,
-        override val paddingRight: Float,
-        override val paddingBottom: Float,
+        override val highlightPaddingLeft: Float,
+        override val highlightPaddingTop: Float,
+        override val highlightPaddingRight: Float,
+        override val highlightPaddingBottom: Float,
         override val messageView: View,
         override val targetView: View? = null,
         override val delay: Long = 0L,
+        private val messageAnimationDuration: Long = 300L,
         private val listener: OnStateChangedListener?
 ) : Target(
         left,
@@ -34,10 +39,10 @@ class SimpleTarget(
         width,
         height,
         radius,
-        paddingLeft,
-        paddingTop,
-        paddingRight,
-        paddingBottom,
+        highlightPaddingLeft,
+        highlightPaddingTop,
+        highlightPaddingRight,
+        highlightPaddingBottom,
         messageView,
         targetView,
         delay
@@ -87,7 +92,7 @@ class SimpleTarget(
         val animation = ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.ABSOLUTE, pivotY).apply {
             this.interpolator = OvershootInterpolator()
             repeatCount = 0
-            duration = 400
+            duration = this@SimpleTarget.messageAnimationDuration
             fillAfter = true
             setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationRepeat(animation: Animation?) {
@@ -108,6 +113,7 @@ class SimpleTarget(
     }
 
     class Builder(context: Activity) : AbstractTargetBuilder<Builder, SimpleTarget>(context) {
+
         private lateinit var title: CharSequence
         private lateinit var description: CharSequence
 
@@ -115,6 +121,27 @@ class SimpleTarget(
         private var topCaretDrawableResId = R.drawable.img_caret_top
         @DrawableRes
         private var bottomCaretDrawableResId = R.drawable.img_caret_bottom
+        @DrawableRes
+        private var messageBgDrawableResId = R.drawable.message_bg
+
+        @ColorRes
+        private var textColorResId = android.R.color.black
+
+        @DimenRes
+        private var titleDimenResId = 0
+        @DimenRes
+        private var descriptionDimenResId = 0
+
+        private var messageAnimationDuration: Long = 300L
+
+        @DimenRes
+        private var messageMarginLeftResId = R.dimen.simple_target_message_margin
+        @DimenRes
+        private var messageMarginTopResId = R.dimen.simple_target_message_margin
+        @DimenRes
+        private var messageMarginRightResId = R.dimen.simple_target_message_margin
+        @DimenRes
+        private var messageMarginBottomResId = R.dimen.simple_target_message_margin
 
         private var listener: OnStateChangedListener? = null
 
@@ -126,6 +153,35 @@ class SimpleTarget(
 
         fun setListener(listener: OnStateChangedListener): Builder = apply { this.listener = listener }
 
+        fun setTopCaretDrawableResId(@DrawableRes topCaretDrawableResId: Int) = apply { this.topCaretDrawableResId = topCaretDrawableResId }
+
+        fun setBottomCaretDrawableResId(@DrawableRes bottomCaretDrawableResId: Int) = apply { this.bottomCaretDrawableResId = bottomCaretDrawableResId }
+
+        fun setMessageAnimationDuration(duration: Long) = apply { this.messageAnimationDuration = duration }
+
+        fun setTextColorResId(@ColorRes textColorResId: Int) = apply { this.textColorResId = textColorResId }
+
+        fun setTitleDimenResId(@DimenRes titleDimenResId: Int) = apply { this.titleDimenResId = titleDimenResId }
+
+        fun setDescriptionDimenResId(@DimenRes descriptionDimenResId: Int) = apply { this.descriptionDimenResId = descriptionDimenResId }
+
+        fun setMessageMargin(@DimenRes messageMarginResId: Int) {
+            this.messageMarginLeftResId = messageMarginResId
+            this.messageMarginTopResId = messageMarginResId
+            this.messageMarginRightResId = messageMarginResId
+            this.messageMarginBottomResId = messageMarginResId
+        }
+
+        fun setMessageMarginHorizontal(@DimenRes messageMarginResId: Int) {
+            this.messageMarginLeftResId = messageMarginResId
+            this.messageMarginRightResId = messageMarginResId
+        }
+
+        fun setMessageMarginVertical(@DimenRes messageMarginResId: Int) {
+            this.messageMarginTopResId = messageMarginResId
+            this.messageMarginBottomResId = messageMarginResId
+        }
+
         override fun build(): SimpleTarget {
             val activity = activityWeakReference.get()
             if (activity == null) {
@@ -134,9 +190,30 @@ class SimpleTarget(
                 val targetView = viewWeakReference?.get()
 
                 val messageView = activity.layoutInflater.inflate(R.layout.layout_simple, null).apply {
-                    (findViewById<TextView>(R.id.title)).text = title
-                    (findViewById<TextView>(R.id.description)).text = description
                     layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+
+                    // Modify margin
+                    setPadding(
+                            resources.getDimension(messageMarginLeftResId).toInt(),
+                            resources.getDimension(messageMarginTopResId).toInt(),
+                            resources.getDimension(messageMarginRightResId).toInt(),
+                            resources.getDimension(messageMarginBottomResId).toInt()
+                    )
+
+                    // Set texts
+                    (findViewById<TextView>(R.id.title)).apply {
+                        text = title
+                        setTextColor(ContextCompat.getColor(context, textColorResId))
+                        if (titleDimenResId > 0) setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(titleDimenResId))
+                    }
+                    (findViewById<TextView>(R.id.description)).apply {
+                        text = description
+                        setTextColor(ContextCompat.getColor(context, textColorResId))
+                        if (descriptionDimenResId > 0) setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(descriptionDimenResId))
+                    }
+
+                    // Modify message
+                    findViewById<View>(R.id.message).setBackgroundResource(messageBgDrawableResId)
 
                     findViewById<ImageView>(R.id.top_caret).apply {
                         setImageResource(topCaretDrawableResId)
@@ -152,13 +229,14 @@ class SimpleTarget(
                         width = width,
                         height = height,
                         radius = radius,
-                        paddingLeft = paddingLeft,
-                        paddingTop = paddingTop,
-                        paddingRight = paddingRight,
-                        paddingBottom = paddingBottom,
+                        highlightPaddingLeft = paddingLeft,
+                        highlightPaddingTop = paddingTop,
+                        highlightPaddingRight = paddingRight,
+                        highlightPaddingBottom = paddingBottom,
                         messageView = messageView,
                         targetView = targetView,
                         delay = startDelayMillis,
+                        messageAnimationDuration = messageAnimationDuration,
                         listener = listener
                 )
             }

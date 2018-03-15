@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private fun showInstructions() {
         val target1 = SimpleTarget.Builder(this@MainActivity).setCoordinate(binding.fab)
                 .setTitle("Floating Action Button")
-                .setRadius(100f)
+                .setHighlightRadius(100f)
                 .setDescription("This is the floating action button.")
                 .build()
 

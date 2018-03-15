@@ -12,7 +12,7 @@ abstract class Target(
         open var top: Float,
         open var width: Float,
         open var height: Float,
-        open val radius: Float,
+        open val highlightRadius: Float,
         open val highlightPaddingLeft: Float,
         open val highlightPaddingTop: Float,
         open val highlightPaddingRight: Float,
@@ -49,7 +49,7 @@ abstract class Target(
         val bottom = this.top + this.height + this.highlightPaddingBottom
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            canvas.drawRoundRect(left, top, right, bottom, radius, radius, targetPaint)
+            canvas.drawRoundRect(left, top, right, bottom, highlightRadius, highlightRadius, targetPaint)
         } else {
             canvas.drawRect(left, top, right, bottom, targetPaint)
         }
@@ -71,8 +71,7 @@ abstract class Target(
     internal fun decideMessagePositionType(): Position {
         val screenSize = Point()
         (messageView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getSize(screenSize)
-
-        return if (top - height / 2 >= screenSize.y / 2) Position.ABOVE else Position.BELOW
+        return if (top > screenSize.y - (top + height)) Position.ABOVE else Position.BELOW
     }
 
     internal fun getCenterX() = left + width / 2

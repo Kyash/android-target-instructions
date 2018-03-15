@@ -18,7 +18,7 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     internal var width = 0f
     internal var height = 0f
 
-    internal var radius = 0f
+    internal var highlightRadius = 0f
 
     internal var hightlightPaddingLeft = 0f
     internal var highlightPaddingTop = 0f
@@ -46,17 +46,17 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         return setCoordinate(location[0].toFloat(), location[1].toFloat(), view.width.toFloat(), view.height.toFloat())
     }
 
-    fun setRadius(radius: Float): T {
-        this.radius = radius
+    fun setHighlightRadius(radius: Float): T {
+        this.highlightRadius = radius
         return self()
     }
 
-    fun setRadius(@DimenRes radiusResId: Int): T {
+    fun setHighlightRadius(@DimenRes radiusResId: Int): T {
         val activity = activityWeakReference.get()
         return if (activity == null) {
             throw IllegalStateException("activity is null")
         } else {
-            setRadius(activity.resources.getDimension(radiusResId))
+            setHighlightRadius(activity.resources.getDimension(radiusResId))
         }
     }
 
@@ -109,6 +109,62 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
             throw IllegalStateException("activity is null")
         } else {
             setHighlightHorizontalPadding(activity.resources.getDimension(paddingResId))
+        }
+    }
+
+    fun setHighlightPaddingLeft(padding: Float): T {
+        this.hightlightPaddingLeft = padding
+        return self()
+    }
+
+    fun setHighlightPaddingLeft(@DimenRes paddingResId: Int): T {
+        val activity = activityWeakReference.get()
+        return if (activity == null) {
+            throw IllegalStateException("activity is null")
+        } else {
+            setHighlightPaddingLeft(activity.resources.getDimension(paddingResId))
+        }
+    }
+
+    fun setHighlightPaddingTop(padding: Float): T {
+        this.highlightPaddingTop = padding
+        return self()
+    }
+
+    fun setHighlightPaddingTop(@DimenRes paddingResId: Int): T {
+        val activity = activityWeakReference.get()
+        return if (activity == null) {
+            throw IllegalStateException("activity is null")
+        } else {
+            setHighlightPaddingTop(activity.resources.getDimension(paddingResId))
+        }
+    }
+
+    fun setHighlightPaddingRight(padding: Float): T {
+        this.highlightPaddingRight = padding
+        return self()
+    }
+
+    fun setHighlightPaddingRight(@DimenRes paddingResId: Int): T {
+        val activity = activityWeakReference.get()
+        return if (activity == null) {
+            throw IllegalStateException("activity is null")
+        } else {
+            setHighlightPaddingRight(activity.resources.getDimension(paddingResId))
+        }
+    }
+
+    fun setHighlightPaddingBottom(padding: Float): T {
+        this.highlightPaddingBottom = padding
+        return self()
+    }
+
+    fun setHighlightPaddingBottom(@DimenRes paddingResId: Int): T {
+        val activity = activityWeakReference.get()
+        return if (activity == null) {
+            throw IllegalStateException("activity is null")
+        } else {
+            setHighlightPaddingBottom(activity.resources.getDimension(paddingResId))
         }
     }
 

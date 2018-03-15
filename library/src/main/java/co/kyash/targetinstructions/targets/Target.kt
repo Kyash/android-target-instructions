@@ -19,21 +19,22 @@ abstract class Target(
         open val highlightPaddingBottom: Float,
         open val messageView: View,
         open val targetView: View? = null,
-        open val delay: Long = 0L
+        open val delay: Long = 0L,
+        open var positionType: Position? = null
 ) {
 
     private val targetPaint = Paint().apply {
         xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
     }
 
-    internal enum class Position {
-        ABOVE,
-        BELOW
-    }
-
     internal fun show() {
         Handler().postDelayed({
             updateCoordinate()
+
+            if (positionType == null) {
+                positionType = decideMessagePositionType()
+            }
+
             showImmediately()
         }, delay)
     }
@@ -68,7 +69,7 @@ abstract class Target(
 
     internal open fun canClick(): Boolean = true
 
-    internal fun decideMessagePositionType(): Position {
+    private fun decideMessagePositionType(): Position {
         val screenSize = Point()
         (messageView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.getSize(screenSize)
         return if (top > screenSize.y - (top + height)) Position.ABOVE else Position.BELOW
@@ -80,6 +81,11 @@ abstract class Target(
 
     interface OnStateChangedListener {
         fun onClosed()
+    }
+
+    enum class Position {
+        ABOVE,
+        BELOW
     }
 
 }

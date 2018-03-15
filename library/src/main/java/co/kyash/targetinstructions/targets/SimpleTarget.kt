@@ -28,6 +28,7 @@ class SimpleTarget(
         override val messageView: View,
         override val targetView: View? = null,
         override val delay: Long = 0L,
+        override var positionType: Position? = null,
         private val messageAnimationDuration: Long = 300L,
         private val messageInterpolator: Interpolator,
         private val listener: OnStateChangedListener?
@@ -43,11 +44,11 @@ class SimpleTarget(
         highlightPaddingBottom,
         messageView,
         targetView,
-        delay
+        delay,
+        positionType
 ) {
 
     override fun showImmediately() {
-        val positionType = decideMessagePositionType()
         val container = messageView.findViewById<LinearLayout>(R.id.container)
         val topCaret = container.findViewById<ImageView>(R.id.top_caret)
         val bottomCaret = container.findViewById<ImageView>(R.id.bottom_caret)
@@ -166,6 +167,7 @@ class SimpleTarget(
                         messageView = messageView,
                         targetView = targetView,
                         delay = startDelayMillis,
+                        positionType = positionType,
                         messageAnimationDuration = messageAnimationDuration,
                         messageInterpolator = messageInterpolator,
                         listener = listener

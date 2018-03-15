@@ -25,6 +25,8 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     internal var highlightPaddingRight = 0f
     internal var highlightPaddingBottom = 0f
 
+    internal var positionType: Target.Position? = null
+
     internal var startDelayMillis = 0L
 
     internal abstract fun self(): T
@@ -58,6 +60,11 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         } else {
             setHighlightRadius(activity.resources.getDimension(radiusResId))
         }
+    }
+
+    fun setPositionType(positionType: Target.Position): T {
+        this.positionType = positionType
+        return self()
     }
 
     fun setStartDelayMillis(startDelayMillis: Long): T {

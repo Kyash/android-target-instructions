@@ -33,7 +33,7 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
 
     abstract fun build(): S
 
-    fun setCoordinate(left: Float, top: Float, width: Float, height: Float): T {
+    fun setTarget(left: Float, top: Float, width: Float, height: Float): T {
         this.left = left
         this.top = top
         this.width = width
@@ -41,11 +41,9 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
         return self()
     }
 
-    fun setCoordinate(view: View): T {
+    fun setTarget(view: View): T {
         viewWeakReference = WeakReference(view)
-        val location = IntArray(2)
-        view.getLocationInWindow(location)
-        return setCoordinate(location[0].toFloat(), location[1].toFloat(), view.width.toFloat(), view.height.toFloat())
+        return self()
     }
 
     fun setHighlightRadius(radius: Float): T {

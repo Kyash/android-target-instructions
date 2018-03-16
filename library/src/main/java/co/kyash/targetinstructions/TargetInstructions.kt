@@ -75,6 +75,12 @@ class TargetInstructions private constructor(
         startInstruction()
     }
 
+    fun finish() {
+        val activity = activityWeakReference.get() ?: return
+        val decorView = activity.window.decorView
+        (decorView as ViewGroup).removeView(instructionsViewWeakReference.get())
+    }
+
     private fun showNextTarget() {
         if (targets.isNotEmpty()) {
             instructionsViewWeakReference.get()?.showTarget(targets[0])
@@ -122,9 +128,7 @@ class TargetInstructions private constructor(
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-                    val activity = activityWeakReference.get() ?: return
-                    val decorView = activity.window.decorView
-                    (decorView as ViewGroup).removeView(instructionsViewWeakReference.get())
+                    finish()
                 }
 
                 override fun onAnimationCancel(animation: Animator?) {

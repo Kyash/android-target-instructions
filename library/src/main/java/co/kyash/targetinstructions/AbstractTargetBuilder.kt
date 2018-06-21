@@ -1,16 +1,16 @@
 package co.kyash.targetinstructions
 
-import android.app.Activity
+import android.content.Context
 import android.support.annotation.DimenRes
 import android.view.View
 import co.kyash.targetinstructions.targets.Target
 import java.lang.ref.WeakReference
 
 abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target>(
-        activity: Activity
+        context: Context
 ) {
 
-    internal val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
+    internal val contextWeakReference: WeakReference<Context> = WeakReference(context)
     internal var viewWeakReference: WeakReference<View>? = null
 
     internal var left = 0f
@@ -20,7 +20,7 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
 
     internal var highlightRadius = 0f
 
-    internal var hightlightPaddingLeft = 0f
+    internal var highlightPaddingLeft = 0f
     internal var highlightPaddingTop = 0f
     internal var highlightPaddingRight = 0f
     internal var highlightPaddingBottom = 0f
@@ -52,9 +52,9 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     }
 
     fun setHighlightRadius(@DimenRes radiusResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightRadius(activity.resources.getDimension(radiusResId))
         }
@@ -71,7 +71,7 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     }
 
     fun setHighlightPadding(padding: Float): T {
-        this.hightlightPaddingLeft = padding
+        this.highlightPaddingLeft = padding
         this.highlightPaddingTop = padding
         this.highlightPaddingRight = padding
         this.highlightPaddingBottom = padding
@@ -79,9 +79,9 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     }
 
     fun setHighlightPadding(@DimenRes paddingResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightPadding(activity.resources.getDimension(paddingResId))
         }
@@ -94,38 +94,38 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     }
 
     fun setHighlightVerticalPadding(@DimenRes paddingResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightVerticalPadding(activity.resources.getDimension(paddingResId))
         }
     }
 
     fun setHighlightHorizontalPadding(padding: Float): T {
-        this.hightlightPaddingLeft = padding
+        this.highlightPaddingLeft = padding
         this.highlightPaddingRight = padding
         return self()
     }
 
     fun setHighlightHorizontalPadding(@DimenRes paddingResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightHorizontalPadding(activity.resources.getDimension(paddingResId))
         }
     }
 
     fun setHighlightPaddingLeft(padding: Float): T {
-        this.hightlightPaddingLeft = padding
+        this.highlightPaddingLeft = padding
         return self()
     }
 
     fun setHighlightPaddingLeft(@DimenRes paddingResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightPaddingLeft(activity.resources.getDimension(paddingResId))
         }
@@ -137,9 +137,9 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     }
 
     fun setHighlightPaddingTop(@DimenRes paddingResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightPaddingTop(activity.resources.getDimension(paddingResId))
         }
@@ -151,9 +151,9 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     }
 
     fun setHighlightPaddingRight(@DimenRes paddingResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightPaddingRight(activity.resources.getDimension(paddingResId))
         }
@@ -165,9 +165,9 @@ abstract class AbstractTargetBuilder<T : AbstractTargetBuilder<T, S>, S : Target
     }
 
     fun setHighlightPaddingBottom(@DimenRes paddingResId: Int): T {
-        val activity = activityWeakReference.get()
+        val activity = contextWeakReference.get()
         return if (activity == null) {
-            throw IllegalStateException("activity is null")
+            throw IllegalStateException("context is null")
         } else {
             setHighlightPaddingBottom(activity.resources.getDimension(paddingResId))
         }

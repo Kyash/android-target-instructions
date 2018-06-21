@@ -36,13 +36,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showInstructions() {
-        val target1 = SimpleTarget.Builder(this@MainActivity).setTarget(binding.fab)
+        val target1 = SimpleTarget.Builder(this@MainActivity)
+                .setTarget(binding.fab)
                 .setTitle("Floating Action Button")
                 .setHighlightRadius(100f)
                 .setDescription("This is the floating action button.")
                 .build()
 
-        val target2 = SimpleTarget.Builder(this@MainActivity).setTarget(binding.firstText)
+        val target2 = SimpleTarget.Builder(this@MainActivity)
+                .setTarget(binding.firstText)
                 .setTitle("First text")
                 .setDescription("This is the first text.")
                 .setHighlightPadding(R.dimen.simple_hightlight_padding)
@@ -53,7 +55,8 @@ class MainActivity : AppCompatActivity() {
                 })
                 .build()
 
-        val target3 = SimpleTarget.Builder(this@MainActivity).setTarget(binding.secondText)
+        val target3 = SimpleTarget.Builder(this@MainActivity)
+                .setTarget(binding.secondText)
                 .setTitle("Second text")
                 .setDescription("This is the second text.")
                 .setMessageLayoutResId(R.layout.layout_instruction_simple_message_black)

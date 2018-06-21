@@ -36,7 +36,7 @@ class InstructionsView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         paint.color = overlayColor
-        canvas?.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), paint)
+        canvas?.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
 
         if (currentTarget != null && canvas != null) {
             currentTarget!!.drawHighlight(canvas)

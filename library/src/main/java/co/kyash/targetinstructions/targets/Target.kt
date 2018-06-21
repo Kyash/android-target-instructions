@@ -52,11 +52,15 @@ abstract class Target(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             canvas.drawRoundRect(left, top, right, bottom, highlightRadius, highlightRadius, targetPaint)
         } else {
-            canvas.drawRect(left, top, right, bottom, targetPaint)
+            if (highlightRadius >= Math.max(width, height) / 4) {
+                canvas.drawCircle(this.left + width / 2, this.top + height / 2, highlightRadius, targetPaint)
+            } else {
+                canvas.drawRect(left, top, right, bottom, targetPaint)
+            }
         }
     }
 
-    fun updateCoordinate() {
+    private fun updateCoordinate() {
         if (targetView != null) {
             val location = IntArray(2)
             targetView!!.getLocationInWindow(location)

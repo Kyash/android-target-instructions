@@ -1,7 +1,8 @@
 package co.kyash.targetinstructions.targets
 
-import android.app.Activity
+import android.content.Context
 import android.support.annotation.LayoutRes
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
@@ -109,7 +110,7 @@ class SimpleTarget(
         messageView.startAnimation(animation)
     }
 
-    class Builder(context: Activity) : AbstractTargetBuilder<Builder, SimpleTarget>(context) {
+    class Builder(context: Context) : AbstractTargetBuilder<Builder, SimpleTarget>(context) {
 
         private lateinit var title: CharSequence
         private lateinit var description: CharSequence
@@ -131,24 +132,20 @@ class SimpleTarget(
 
         fun setListener(listener: OnStateChangedListener): Builder = apply { this.listener = listener }
 
-        fun setMessageLayoutResId(@LayoutRes messageLayoutResId: Int) = apply {
-            this.messageLayoutResId = messageLayoutResId
-        }
+        fun setMessageLayoutResId(@LayoutRes messageLayoutResId: Int) = apply { this.messageLayoutResId = messageLayoutResId }
 
         fun setMessageAnimationDuration(duration: Long) = apply { this.messageAnimationDuration = duration }
 
-        fun setMessageInterpolator(interpolator: Interpolator) = apply {
-            this.messageInterpolator = interpolator
-        }
+        fun setMessageInterpolator(interpolator: Interpolator) = apply { this.messageInterpolator = interpolator }
 
         override fun build(): SimpleTarget {
-            val activity = activityWeakReference.get()
-            if (activity == null) {
+            val context = contextWeakReference.get()
+            if (context == null) {
                 throw IllegalStateException("activity is null")
             } else {
                 val targetView = viewWeakReference?.get()
 
-                val messageView = activity.layoutInflater.inflate(messageLayoutResId, null).apply {
+                val messageView = LayoutInflater.from(context).inflate(messageLayoutResId, null).apply {
                     layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
                     (findViewById<TextView>(R.id.title)).text = title
                     (findViewById<TextView>(R.id.description)).text = description
@@ -160,7 +157,7 @@ class SimpleTarget(
                         width = width,
                         height = height,
                         highlightRadius = highlightRadius,
-                        highlightPaddingLeft = hightlightPaddingLeft,
+                        highlightPaddingLeft = highlightPaddingLeft,
                         highlightPaddingTop = highlightPaddingTop,
                         highlightPaddingRight = highlightPaddingRight,
                         highlightPaddingBottom = highlightPaddingBottom,

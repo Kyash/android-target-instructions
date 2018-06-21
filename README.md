@@ -6,9 +6,9 @@ Make easy to implement the instructions feature to your app.
 
 ![demo.gif](art/demo.gif)
 
-## Download
+# Download
 
-### Project build.gradle
+## Project build.gradle
 
 ```groovy
 allprojects {
@@ -19,7 +19,7 @@ allprojects {
 }
 ```
 
-### App build.gradle
+## App build.gradle
 
 ```groovy
 dependencies {
@@ -30,7 +30,7 @@ dependencies {
 
 `LATEST_VERSION` is  [![JitPack](https://jitpack.io/v/Kyash/android-target-instructions.svg)](https://jitpack.io/#Kyash/android-target-instructions)
 
-## Simple Usage
+# Simple Usage
 
 Create `Target` instance to set view.
 
@@ -53,7 +53,7 @@ val target2 = SimpleTarget.Builder(context)
 
 Then, set them to `TargetInstructions` and call `start()` method.
 
-```
+```kotlin
 TargetInstructions.with(activity)
   .setTargets(arrayListOf(target1, target2))
   .start()
@@ -61,9 +61,9 @@ TargetInstructions.with(activity)
 
 That's it!
 
-## Advanced Usage
+# Advanced Usage
 
-### SimpleTarget attributes
+## SimpleTarget attributes
 
 You can set some attributes to `SimpleTarget` class.
 
@@ -87,29 +87,29 @@ val target = SimpleTarget.Builder(context)
   .build()
 ```
 
-### Customize SimpleTarget Layout
+## Customize SimpleTarget Layout
 
 You can set the custom layout file to `SimpleTarget` like [this](https://github.com/Kyash/android-target-instructions/blob/3374e0528ed352c05b7827a158f717f6e1c48a1c/example/src/main/java/co/kyash/androidtargetinstructions/example/CustomUsageActivity.kt#L68).
 
-```xml
+```kotlin
 SimpleTarget.Builder(context).setTarget(binding.secondText)
   .setTitle("Second text")
   .setDescription("This is the second text. This is customized instruction.")
   .setMessageLayoutResId(R.layout.layout_instruction_simple_message_black) // This is custom layout
 ```
 
-This custom layout code is [here](https://github.com/Kyash/android-target-instructions/blob/3374e0528ed352c05b7827a158f717f6e1c48a1c/example/src/main/res/layout/layout_instruction_simple_message_black.xml)
+This custom layout code is [here](https://github.com/Kyash/android-target-instructions/blob/3374e0528ed352c05b7827a158f717f6e1c48a1c/example/src/main/res/layout/layout_instruction_simple_message_black.xml).
 
 You have to put these layout id in custom layout.
 
 ![customize_message_layout.png](art/customize_message_layout.png)
 
-### Create custom Target
+## Create custom Target
 If you want to customize more, you can create the original `Target` class by implementing `co.kyash.targetinstructions.targets.Target` class.
 
 [SimpleTarget.kt](https://github.com/Kyash/android-target-instructions/blob/master/library/src/main/java/co/kyash/targetinstructions/targets/SimpleTarget.kt) would help you.
 
-### TargetInstructions attributes
+## TargetInstructions attributes
 
 You can set some attributes to `TargetInstructions` class.
 
@@ -123,20 +123,20 @@ TargetInstructions.with(this@SimpleUsageActivity)
   // .finish() // Call this method when you want to finish tutorial.
 ```
 
-## Dependencies
+# Dependencies
 This library depends on Kotlin.
 
-## Thanks
+# Thanks
 This library is inspired from these awesome code. Thank you so much!
 - https://github.com/TakuSemba/Spotlight
 - https://github.com/itzikBraun/TutorialView
 - https://github.com/sjwall/MaterialTapTargetPrompt
 
-## Contributing
+# Contributing
 We are always welcome your contribution!
 If you find a bug or want to add new feature, please raise issue.
 
-## License
+# License
 
 ```
 Copyright 2018 Kyash

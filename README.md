@@ -2,7 +2,9 @@
 
 [![JitPack](https://jitpack.io/v/Kyash/android-target-instructions.svg)](https://jitpack.io/#Kyash/android-target-instructions)
 
-Make easy to implement the instructions feature.
+Make easy to implement the instructions feature to your app.
+
+![demo.gif](art/demo.gif)
 
 ## Download
 
@@ -28,38 +30,107 @@ dependencies {
 
 `LATEST_VERSION` is  [![JitPack](https://jitpack.io/v/Kyash/android-target-instructions.svg)](https://jitpack.io/#Kyash/android-target-instructions)
 
-## Usage
+## Simple Usage
+
+Create `Target` instance to set view.
 
 ```kotlin
-val target1 = SimpleTarget.Builder(this@MainActivity).setTarget(binding.fab)
-    .setTitle("Floating Action Button")
-    .setHighlightRadius(100f)
-    .setDescription("This is the floating action button.")
-    .build()
+// Create Target and set
+val target1 = SimpleTarget.Builder(context)
+  .setTarget(binding.fab)
+  .setTitle("Floating Action Button")
+  .setHighlightRadius(100f) // Circle shape
+  .setDescription("This is the floating action button.")
+  .build()
 
-val target2 = SimpleTarget.Builder(this@MainActivity).setTarget(binding.firstText)
-    .setTitle("First text")
-    .setDescription("This is the first text.")
-    .setHighlightPadding(R.dimen.simple_hightlight_padding)
-    .setListener(object : Target.OnStateChangedListener {
-        override fun onClosed() {
-            binding.scrollview.smoothScrollBy(0, 10000)
-        }
-    })
-    .build()
-
-val target3 = SimpleTarget.Builder(this@MainActivity).setTarget(binding.secondText)
-    .setTitle("Second text")
-    .setDescription("This is the second text.")
-    .setMessageLayoutResId(R.layout.layout_instruction_simple_message_black)
-    .setHighlightHorizontalPadding(R.dimen.space_minus_16dp)
-    .setStartDelayMillis(200L)
-    .build()
-
-TargetInstructions.with(this@MainActivity)
-    .setTargets(arrayListOf(target1, target2, target3))
-    .start()
+val target2 = SimpleTarget.Builder(context)
+  .setTarget(binding.firstText)
+  .setTitle("First text")
+  .setDescription("This is the first text.")
+  .setHighlightPadding(R.dimen.simple_highlight_padding)
+  .build()
 ```
+
+Then, set them to `TargetInstructions` and call `start()` method.
+
+```
+TargetInstructions.with(activity)
+  .setTargets(arrayListOf(target1, target2))
+  .start()
+```
+
+That's it!
+
+## Advanced Usage
+
+### SimpleTarget attributes
+
+You can set some attributes to `SimpleTarget` class.
+
+```kotlin
+val target = SimpleTarget.Builder(context)
+  .setTarget(binding.fab)
+  // or you can set target by using left, top position and width, height.
+  .setTarget(0f, 0f, 100f, 100f)
+  .setTitle("Floating Action Button")
+  .setDescription("This is the floating action button.")
+  .setHighlightRadius(100f) // If you don't set this, the highlight shape would be square.
+  .setMessageInterpolator(FastOutSlowInInterpolator()) // For message scale animation
+  .setMessageAnimationDuration(200L)
+  .setPositionType(Target.Position.ABOVE) // Message position
+  .setStartDelayMillis(200L)
+  .setListener(object: Target.OnStateChangedListener {
+    override fun onClosed() {
+      // Do after target is closed. Ex) Scroll to bottom
+    }
+  })
+  .build()
+```
+
+### Customize SimpleTarget Layout
+
+You can set the custom layout file to `SimpleTarget` like [this](https://github.com/Kyash/android-target-instructions/blob/3374e0528ed352c05b7827a158f717f6e1c48a1c/example/src/main/java/co/kyash/androidtargetinstructions/example/CustomUsageActivity.kt#L68).
+
+```xml
+SimpleTarget.Builder(context).setTarget(binding.secondText)
+  .setTitle("Second text")
+  .setDescription("This is the second text. This is customized instruction.")
+  .setMessageLayoutResId(R.layout.layout_instruction_simple_message_black) // This is custom layout
+```
+
+This custom layout code is [here](https://github.com/Kyash/android-target-instructions/blob/3374e0528ed352c05b7827a158f717f6e1c48a1c/example/src/main/res/layout/layout_instruction_simple_message_black.xml)
+
+You have to put these layout id in custom layout.
+
+![customize_message_layout.png](art/customize_message_layout.png)
+
+### Create custom Target
+If you want to customize more, you can create the original `Target` class by implementing `co.kyash.targetinstructions.targets.Target` class.
+
+[SimpleTarget.kt](https://github.com/Kyash/android-target-instructions/blob/master/library/src/main/java/co/kyash/targetinstructions/targets/SimpleTarget.kt) would help you.
+
+### TargetInstructions attributes
+
+You can set some attributes to `TargetInstructions` class.
+
+```kotlin
+TargetInstructions.with(this@SimpleUsageActivity)
+  .setTargets(arrayListOf(target1, target2))
+  .setFadeDuration(200L)
+  .setFadeInterpolator(LinearOutSlowInInterpolator())
+  .setOverlayColorResId(R.color.black_alpha) // Background color
+  .start()
+  // .finish() // Call this method when you want to finish tutorial.
+```
+
+## Dependencies
+This library depends on Kotlin.
+
+## Thanks
+This library is inspired from these awesome code. Thank you so much!
+- https://github.com/TakuSemba/Spotlight
+- https://github.com/itzikBraun/TutorialView
+- https://github.com/sjwall/MaterialTapTargetPrompt
 
 ## Contributing
 We are always welcome your contribution!

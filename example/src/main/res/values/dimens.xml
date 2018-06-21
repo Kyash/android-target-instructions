@@ -8,6 +8,6 @@
 
     <dimen name="simple_title">20sp</dimen>
     <dimen name="simple_description">16sp</dimen>
-    <dimen name="simple_hightlight_padding">16sp</dimen>
+    <dimen name="simple_highlight_padding">16sp</dimen>
 
 </resources>

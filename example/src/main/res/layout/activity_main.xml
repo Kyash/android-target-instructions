@@ -27,47 +27,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/first_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="First text"
-                    android:textSize="20dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1000dp"
-                    android:layout_marginTop="@dimen/space_16dp"
-                    android:background="@color/red" />
-
-                <TextView
-                    android:id="@+id/second_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/simple_usage"
+                    style="@style/Row"
                     android:padding="@dimen/space_16dp"
-                    android:text="Second text"
-                    android:textSize="20dp" />
+                    android:text="Simple Usage" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp" />
+                <View style="@style/Border" />
+
+                <TextView
+                    android:id="@+id/custom_usage"
+                    style="@style/Row"
+                    android:padding="@dimen/space_16dp"
+                    android:text="Custom Usage" />
 
             </LinearLayout>
 
         </ScrollView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_search_white_24dp" />
 
     </RelativeLayout>
 

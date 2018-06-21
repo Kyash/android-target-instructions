@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(SimpleUsageActivity.createIntent(this@MainActivity))
             }
             customUsage.setOnClickListener {
-
+                startActivity(CustomUsageActivity.createIntent(this@MainActivity))
             }
         }
     }

@@ -27,6 +27,11 @@
             android:name=".SimpleUsageActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:exported="false" />
+
+        <activity
+            android:name=".CustomUsageActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:exported="false" />
     </application>
 
 </manifest>
